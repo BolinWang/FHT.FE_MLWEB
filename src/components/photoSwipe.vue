@@ -39,67 +39,65 @@ import 'swiper/dist/css/swiper.min.css'
 // import 'photoswipe/dist/photoswipe.css'
 // import 'photoswipe/dist/default-skin/default-skin.css'
 export default {
-	props: {
-		photoList: {
-			type: Array,
-			default: () => []
-		},
-		options: {
-			type: Object,
-			default: () => {
-				return {
+  props: {
+    photoList: {
+      type: Array,
+      default: () => []
+    },
+    options: {
+      type: Object,
+      default: () => {
+        return {
           loop: true,
 
           // 如果需要分页器
           pagination: {
-            el: '.swiper-pagination',
+            el: '.swiper-pagination'
           },
 
           // 如果需要前进后退按钮
           navigation: {
             nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-          },
-				}
-			}
-		},
-	},
-  data() {
+            prevEl: '.swiper-button-prev'
+          }
+        }
+      }
+    }
+  },
+  data () {
     return {
       instance: null
     }
   },
-	mounted() {
-
-	},
-	methods: {
-    showPhoto() {
+  methods: {
+    showPhoto () {
       this.instance.open()
     }
-	},
-  mounted() {
-    let _this = this
+  },
+  mounted () {
+    /* eslint-disable */
     this.instance = M.Modal.init(this.$el, {
-      onOpenEnd() {
+    /* eslint-enable */
+      onOpenEnd () {
         var galleryTop = new Swiper('.gallery-top', {
           spaceBetween: 10,
-          loop:true,
-          loopedSlides: 5, //looped slides should be the same
+          loop: true,
+          loopedSlides: 5, // looped slides should be the same
           navigation: {
             nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-          },
-        });
+            prevEl: '.swiper-button-prev'
+          }
+        })
         var galleryThumbs = new Swiper('.gallery-thumbs', {
           spaceBetween: 10,
           slidesPerView: 4,
           touchRatio: 0.2,
           loop: true,
-          loopedSlides: 5, //looped slides should be the same
-          slideToClickedSlide: true,
-        });
-        galleryTop.controller.control = galleryThumbs;
-        galleryThumbs.controller.control = galleryTop;
+          loopedSlides: 5, // looped slides should be the same
+          slideToClickedSlide: true
+        })
+        galleryTop.controller.control = galleryThumbs
+        galleryThumbs.controller.control = galleryTop
       },
       startingTop: '0%',
       endingTop: '0%',
@@ -168,4 +166,3 @@ export default {
   opacity: 1;
 }
 </style>
-

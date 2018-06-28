@@ -31,23 +31,23 @@ export default {
 
         // 如果需要分页器
         pagination: {
-          el: '.swiper-pagination',
+          el: '.swiper-pagination'
         },
 
         // 如果需要前进后退按钮
         navigation: {
           nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev',
-        },
+          prevEl: '.swiper-button-prev'
+        }
       }
     }
   },
   methods: {
-    showPhoto() {
+    showPhoto () {
       this.$refs.modal1.showPhoto()
     }
   },
-  mounted() {
+  mounted () {
 
   }
 }
@@ -56,5 +56,3 @@ export default {
 <style lang="scss" scoped>
 
 </style>
-
-

@@ -25,8 +25,10 @@ export default {
   methods: {
 
   },
-  mounted() {
+  mounted () {
+    /* eslint-disable */
     M.FormSelect.init(this.$refs.mySelect)
+    /* eslint-enable */
   }
 }
 </script>
@@ -34,5 +36,3 @@ export default {
 <style lang="scss" scoped>
 
 </style>
-
-

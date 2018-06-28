@@ -1,9 +1,7 @@
-import fetch from '@/utils/fetch';
+import fetch from '@/utils/fetch'
 
-/* 获取区域数据
-获取区域数据
-*/
-export function getAreaListApi(params = {}) {
+/* 获取区域数据 */
+export function getAreaListApi (params = {}) {
   return fetch({
     url: '/api/search',
     method: 'post',
@@ -11,11 +9,11 @@ export function getAreaListApi(params = {}) {
       method: 'areaListWithHouse',
       params
     }
-  });
+  })
 }
 
 /* 获取房源列表 */
-export function getRoomListApi(params = {}) {
+export function getRoomListApi (params = {}) {
   return fetch({
     url: '/api/search',
     method: 'post',
@@ -23,11 +21,11 @@ export function getRoomListApi(params = {}) {
       method: 'searchByPage',
       params
     }
-  });
+  })
 }
 
 /* 获取城市列表 */
-export function getCityListApi(params = {}) {
+export function getCityListApi (params = {}) {
   return fetch({
     url: '/api/search',
     method: 'post',
@@ -35,5 +33,5 @@ export function getCityListApi(params = {}) {
       method: 'cityList',
       params
     }
-  });
+  })
 }

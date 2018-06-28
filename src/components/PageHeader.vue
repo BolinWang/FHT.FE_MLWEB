@@ -21,5 +21,3 @@ export default {
     background-color: #fff;
   }
 </style>
-
-

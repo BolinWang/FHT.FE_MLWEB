@@ -20,10 +20,10 @@ export default {
   methods: {
 
   },
-  mounted() {
+  mounted () {
 
   },
-  created() {
+  created () {
 
   }
 }

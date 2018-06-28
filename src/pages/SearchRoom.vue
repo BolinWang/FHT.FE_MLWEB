@@ -433,10 +433,10 @@ export default {
     }
   },
   computed: {
-    chipList() {
+    chipList () {
       let arr = []
       for (let n in this.filterList) {
-        if(this.filterList[n] > 0) {
+        if (this.filterList[n] > 0) {
           arr.push({
             from: n,
             text: this[n][this.filterList[n]].text
@@ -447,15 +447,15 @@ export default {
     }
   },
   methods: {
-    setFilterList() {
+    setFilterList () {
       for (let k in this.$route.query) {
-        if(this.filterList[k] != undefined){
+        if (this.filterList[k] !== undefined) {
           this.filterList[k] = this.$route.query[k]
         }
       }
       this.keyword = this.$route.query.keyword || ''
     },
-    getRoomList(reset) {
+    getRoomList (reset) {
       this.isLoading = true
       if (reset) {
         this.roomList.length = 0
@@ -463,33 +463,33 @@ export default {
       this.curPage = Number(this.$route.query.page) || 1
       let params = {}
       for (let k in this.filterList) {
-        if (this.filterList[k] != 0) {
-          switch(k){
+        if (this.filterList[k] !== 0) {
+          switch (k) {
             case 'typeList':
-              if(this[k][this.filterList[k]].val == 3){
+              if (this[k][this.filterList[k]].val === 3) {
                 params.type = 1
               } else {
                 params.type = 2
                 params.houseRentType = this[k][this.filterList[k]].val
               }
-              break;
+              break
             case 'regionList':
               params.regionId = this[k][this.filterList[k]].val
-              break;
+              break
             case 'rentalList':
               params.maxPrice = this[k][this.filterList[k]].val.maxPrice
               params.minPrice = this[k][this.filterList[k]].val.minPrice
-              break;
+              break
             case 'chamberList':
               params.chamberCounts = [this[k][this.filterList[k]].val]
-              break;
+              break
             case 'areaList':
               params.minRoomArea = this[k][this.filterList[k]].val.minRoomArea
               params.maxRoomArea = this[k][this.filterList[k]].val.maxRoomArea
-              break;
+              break
             case 'decorationList':
               params.decorationDegrees = [this[k][this.filterList[k]].val]
-              break;
+              break
           }
         }
       }
@@ -504,15 +504,17 @@ export default {
       }, params)
       getRoomListApi(params).then((res) => {
         this.isLoading = false
-        if (res.code != 0) {
+        if (Number(res.code) !== 0) {
+          /* eslint-disable */
           M.toast({html: res.message})
+          /* eslint-enable */
           return
         }
         let data = res.data
         this.pageCount = data.totalPages
         this.roomCount = data.totalRecords
-        data.resultList.forEach((item ,index) => {
-          if(item.type == 2){
+        data.resultList.forEach((item, index) => {
+          if (item.type === 2) {
             item.info = item.name.split('·')
             item.name = item.info[1]
             item.showTagList = [{
@@ -534,7 +536,7 @@ export default {
         this.setPageList()
       })
     },
-    setPageList() {
+    setPageList () {
       let count = Number(this.pageCount)
       let curPage = Number(this.curPage)
       let startPage = curPage > 3 ? (Math.min(curPage - 2, Math.max(count - 4, 1))) : 1
@@ -556,24 +558,24 @@ export default {
         this.pageList.push(count)
       }
     },
-    getCityList() {
+    getCityList () {
       getCityListApi().then((res) => {
-        if(res.code != 0) {
+        if (Number(res.code) !== 0) {
           return
         }
         res.data.cityList.forEach((item, index) => {
           this.cityList.push({
             cityId: item.areaId,
-            name: item.areaName,
+            name: item.areaName
           })
         })
       })
     },
-    getAreaList() {
+    getAreaList () {
       getAreaListApi({
         cityId: this.cityId
       }).then((res) => {
-        res.data.areaZones.forEach((item ,index) => {
+        res.data.areaZones.forEach((item, index) => {
           this.regionList.push({
             text: item.areaName,
             val: item.areaId
@@ -584,10 +586,10 @@ export default {
         this.getRoomList(true)
       })
     },
-    changePage(index) {
+    changePage (index) {
       let params = {}
       for (let k in this.filterList) {
-        if(this.filterList[k] != 0){
+        if (this.filterList[k] !== 0) {
           params[k] = this.filterList[k]
         }
       }
@@ -601,7 +603,7 @@ export default {
         query: params
       })
     },
-    deleteChipList() {
+    deleteChipList () {
       for (let n in this.filterList) {
         this.filterList[n] = 0
       }
@@ -609,11 +611,11 @@ export default {
         path: '/search'
       })
     },
-    changeFilterList(key, val) {
+    changeFilterList (key, val) {
       this.filterList[key] = val
       let params = {}
       for (let k in this.filterList) {
-        if(this.filterList[k] != 0){
+        if (this.filterList[k] !== 0) {
           params[k] = this.filterList[k]
         }
       }
@@ -622,14 +624,16 @@ export default {
         query: params
       })
     },
-    searchByKeyword() {
-      if(this.keyword == ''){
+    searchByKeyword () {
+      if (this.keyword === '') {
+        /* eslint-disable */
         M.toast({html: '搜索条件不能为空！'})
+        /* eslint-enable */
         return
       }
       let params = {}
       for (let k in this.filterList) {
-        if(this.filterList[k] != 0){
+        if (this.filterList[k] !== 0) {
           params[k] = this.filterList[k]
         }
       }
@@ -642,29 +646,31 @@ export default {
   },
   watch: {
     '$route' (to, from) {
-      this.$router.go(0);
+      this.$router.go(0)
     },
-    cityList() {
+    cityList () {
       this.$nextTick(() => {
+        /* eslint-disable */
         M.FormSelect.init(this.$refs.dropdown)
+        /* eslint-enable */
         document.querySelectorAll('.dropdown-content')[0].style.height = '500px'
       })
     },
-    cityId(newVal, oldVal) {
-      if(!oldVal || newVal == oldVal) {
+    cityId (newVal, oldVal) {
+      if (!oldVal || newVal === oldVal) {
         return
       }
       // this.$cookies.remove('MLUSERCITY')
       this.$cookies.set('MLUSERCITY', newVal, 60 * 60 * 24 * 30, '/')
-      location.href = "/search"
+      location.href = '/search'
     }
   },
-  mounted() {
+  mounted () {
     this.cityId = this.$cookies.get('MLUSERCITY') || '330100'
     this.getCityList()
     this.getAreaList()
   },
-  created() {
+  created () {
 
   }
 }
@@ -1011,5 +1017,3 @@ export default {
     }
   }
 </style>
-
-
