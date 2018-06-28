@@ -70,5 +70,11 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "http://116.62.130.63:3000/dequan/FHT.FE_ml_website.git"
+  },
+  "license": "ISC"
 }
