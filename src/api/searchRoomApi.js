@@ -1,6 +1,8 @@
 import fetch from '@/utils/fetch';
 
-/* 获取区域数据 */
+/* 获取区域数据
+获取区域数据
+*/
 export function getAreaListApi(params = {}) {
   return fetch({
     url: '/api/search',
