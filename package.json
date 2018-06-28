@@ -1,5 +1,5 @@
 {
-  "name": "heihei",
+  "name": "ml-website",
   "version": "1.0.0",
   "description": "A Vue.js project",
   "author": "褚德权 <chudequan_48@163.com>",
@@ -80,5 +80,11 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "main": ".eslintrc.js",
+  "repository": {
+    "type": "git",
+    "url": "http://116.62.130.63:3000/FHT.FE/FHT.FE_ml_website.git"
+  },
+  "license": "ISC"
 }
