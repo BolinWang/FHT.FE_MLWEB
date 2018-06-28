@@ -1,0 +1,19 @@
+body {
+  background-color: #f6f6f6;
+}
+
+
+.justify-content-fs {
+  display: flex;
+  align-items: center;
+}
+.justify-content-sb {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.justify-content-ct {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
