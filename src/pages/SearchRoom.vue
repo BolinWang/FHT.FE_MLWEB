@@ -1,9 +1,14 @@
+/*
+ * @Author: chudequan
+ * @Date: 2018-07-01 17:10:30
+ * @Last Modified by: chudequan
+ * @Last Modified time: 2018-07-01 17:10:30
+ */
 <template>
   <div>
     <div class="row ml-search-container">
       <div class="city-select input-field">
         <select ref="dropdown" v-model="cityId">
-          <!-- <option value="1" selected>杭州市</option> -->
           <option
           :value="item.cityId"
           v-for="(item, index) in cityList"
@@ -19,95 +24,33 @@
     <div class="row">
       <div class="card filter-card ml-card">
         <div class="card-content">
-          <div>
-            <div class="filter-item">
-              <span class="title">类型</span>
-              <div class="search-list">
-                <a
-                  v-for="(item, index) in typeList"
-                  :key="index"
-                  @click="changeFilterList('typeList', index)"
-                  :class="{'active': filterList.typeList == index}"
-                  href="javascript: void(0)"
-                  class="search-item">
-                  {{item.text}}
-                </a>
-              </div>
-            </div>
-            <div class="filter-item">
-              <span class="title">区域</span>
-              <div class="search-list" v-if="regionList.length">
-                <a
-                  v-for="(item, index) in regionList"
-                  :key="index"
-                  @click="changeFilterList('regionList', index)"
-                  :class="{'active': filterList.regionList == index}"
-                  href="javascript: void(0)"
-                  class="search-item">
-                  {{item.text}}
-                </a>
-              </div>
-            </div>
-            <div class="filter-item">
-              <span class="title">租金</span>
-              <div class="search-list">
-                <a
-                  v-for="(item, index) in rentalList"
-                  :key="index"
-                  @click="changeFilterList('rentalList', index)"
-                  :class="{'active': filterList.rentalList == index}"
-                  href="javascript: void(0)"
-                  class="search-item">
-                  {{item.text}}
-                </a>
-              </div>
-              <!-- <div class="rental-input-group">
-                <input type="number" class="browser-default">
-                <input type="number" class="browser-default" @keypress.enter="changeRental">
-              </div> -->
-            </div>
-            <div class="filter-item">
-              <span class="title">居室</span>
-              <div class="search-list">
-                <a
-                  v-for="(item, index) in chamberList"
-                  :key="index"
-                  @click="changeFilterList('chamberList', index)"
-                  :class="{'active': filterList.chamberList == index}"
-                  href="javascript: void(0)"
-                  class="search-item">
-                  {{item.text}}
-                </a>
-              </div>
-            </div>
-            <div class="filter-item">
-              <span class="title">面积</span>
-              <div class="search-list">
-                <a
-                  v-for="(item, index) in areaList"
-                  :key="index"
-                  @click="changeFilterList('areaList', index)"
-                  :class="{'active': filterList.areaList == index}"
-                  href="javascript: void(0)"
-                  class="search-item">
-                  {{item.text}}
-                </a>
-              </div>
-            </div>
-            <div class="filter-item">
-              <span class="title">装修</span>
-              <div class="search-list">
-                <a
-                  v-for="(item, index) in decorationList"
-                  :key="index"
-                  @click="changeFilterList('decorationList', index)"
-                  :class="{'active': filterList.decorationList == index}"
-                  href="javascript: void(0)"
-                  class="search-item">
-                  {{item.text}}
-                </a>
-              </div>
-            </div>
+          <div class="filter-item justify-content-fs">
+            <span class="title">类型</span>
+            <SearchList v-if="regionList.length" type="typeList" :searchList="typeList" :filterList="filterList" @changeFilterList="changeFilterList"></SearchList>
+          </div>
+          <div class="filter-item justify-content-fs">
+            <span class="title">区域</span>
+            <SearchList v-if="regionList.length" type="regionList" :searchList="regionList" :filterList="filterList" @changeFilterList="changeFilterList"></SearchList>
+          </div>
+          <div class="filter-item justify-content-fs">
+            <span class="title">租金</span>
+            <SearchList v-if="regionList.length" type="rentalList" :searchList="rentalList" :filterList="filterList" @changeFilterList="changeFilterList"></SearchList>
+            <!-- <div class="rental-input-group">
+              <input type="number" class="browser-default">
+              <input type="number" class="browser-default" @keypress.enter="changeRental">
+            </div> -->
+          </div>
+          <div class="filter-item justify-content-fs">
+            <span class="title">居室</span>
+            <SearchList v-if="regionList.length" type="chamberList" :searchList="chamberList" :filterList="filterList" @changeFilterList="changeFilterList"></SearchList>
+          </div>
+          <div class="filter-item justify-content-fs">
+            <span class="title">面积</span>
+            <SearchList v-if="regionList.length" type="areaList" :searchList="areaList" :filterList="filterList" @changeFilterList="changeFilterList"></SearchList>
+          </div>
+          <div class="filter-item justify-content-fs">
+            <span class="title">装修</span>
+            <SearchList v-if="regionList.length" type="decorationList" :searchList="decorationList" :filterList="filterList" @changeFilterList="changeFilterList"></SearchList>
           </div>
         </div>
       </div>
@@ -164,7 +107,7 @@
                 <span class="room-region truncate"><i class="material-icons">location_on</i>{{item.region}}</span>
               </div>
               <div class="justify-content-fs room-info">
-                <span class="room-area">{{item.area}}</span>
+                <span class="room-area"><span class="truncate">{{item.area}}</span></span>
                 <span class="room-layout">{{item.layout}}</span>
                 <span class="room-decoration">{{item.decoration}}</span>
               </div>
@@ -210,19 +153,24 @@
         </div>
       </div>
       <div v-else>
-        当前选项暂无房源数据QAQ
+        <img src="../assets/images/no-data.png" width="128" height="128" alt="">
+        <p>当前选项暂无房源数据QAQ</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import SearchList from '@/components/SearchList'
 import {
   getAreaListApi,
   getRoomListApi,
   getCityListApi
 } from '@/api/searchRoomApi'
 export default {
+  components: {
+    SearchList
+  },
   data () {
     return {
       cityId: null,
@@ -575,6 +523,7 @@ export default {
       getAreaListApi({
         cityId: this.cityId
       }).then((res) => {
+        this.setFilterList()
         res.data.areaZones.forEach((item, index) => {
           this.regionList.push({
             text: item.areaName,
@@ -582,7 +531,6 @@ export default {
           })
         })
         this.regionList[0].text = '不限'
-        this.setFilterList()
         this.getRoomList(true)
       })
     },
@@ -750,10 +698,11 @@ export default {
   }
   .filter-card {
     margin: 0;
+    .filter-item {
+      height: 30px;
+    }
     @at-root {
       .filter-item {
-        display: flex;
-        align-items: center;
         margin-bottom: 10px;
         &:last-child {
           margin-bottom: 0;
@@ -761,10 +710,9 @@ export default {
         .title {
           font-size: 14px;
           font-weight: bold;
-          // line-height: 30px;
           margin-right: 10px;
           @media screen and (max-width: 1130px) {
-            font-size: 12px;
+            font-size: 13px;
           }
         }
         .rental-input-group {
@@ -800,7 +748,6 @@ export default {
     .filter-item {
       position: relative;
       display: inline-block;
-      margin-bottom: 0;
       line-height: 1;
       font-size: 12px;
       padding-right: 70px;
@@ -921,6 +868,7 @@ export default {
           .room-area, .room-layout {
             position: relative;
             margin-right: 20px;
+            max-width: 40%;
             &::after {
               content: "";
               position: absolute;
@@ -992,28 +940,7 @@ export default {
   }
   .noData {
     min-height: 200px;
-  }
-
-  .search-list {
-    position: relative;
-    flex: 1;
-    .search-item {
-      position: relative;
-      z-index: 1;
-      display: inline-block;
-      margin-right: 10px;
-      padding: 0 10px;
-      line-height: 30px;
-      font-size: 13px;
-      color: #666;
-      transition: color 0.3s;
-      &.active {
-        color: $mlThemeColor;
-      }
-      @media screen and (max-width: 1130px) {
-        font-size: 12px;
-        padding: 0 5px;
-      }
-    }
+    text-align: center;
+    color: #666;
   }
 </style>

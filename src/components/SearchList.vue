@@ -1,15 +1,21 @@
+/*
+ * @Author: chudequan
+ * @Date: 2018-07-01 16:56:20
+ * @Last Modified by: chudequan
+ * @Last Modified time: 2018-07-01 16:56:42
+ */
+
 <template>
   <div class="search-list">
     <a
       v-for="(item, index) in searchList"
       :key="index"
-      @click="changeIndex(index)"
-      :class="{'white-text': curIndex == index}"
-      href="#!"
+      @click="$emit('changeFilterList', type, index)"
+      :class="{'active': filterList[type] == index}"
+      href="javascript: void(0)"
       class="search-item">
       {{item.text}}
     </a>
-    <div class="follow-bg" :style="{ left: `${nowPosition}px`, width: `${nowWidth}px`}"></div>
   </div>
 </template>
 
@@ -17,34 +23,28 @@
 export default {
   props: {
     searchList: {
-			type: Array,
-			default: () => []
+      type: Array,
+      default: () => []
     },
-    curIndex: {
-			type: Number,
-			default: () => 0
+    filterList: {
+      type: Object,
+      default: () => {}
     },
+    type: {
+      type: String,
+      default: () => ''
+    }
   },
   data () {
     return {
-      nowPosition: 0,
-      nowWidth: 0
+
     }
   },
   methods: {
-    changeIndex(i) {
-      // this.curIndex = i
-    }
+
   },
-  watch: {
-    curIndex(i) {
-      console.log(i)
-      this.nowPosition = this.$el.getElementsByClassName('search-item')[i].offsetLeft
-      this.nowWidth = this.$el.getElementsByClassName('search-item')[i].getBoundingClientRect().width
-    }
-  },
-  mounted() {
-    // this.curIndex = 0
+  mounted () {
+
   }
 }
 </script>
@@ -60,18 +60,16 @@ export default {
       margin-right: 10px;
       padding: 0 10px;
       line-height: 30px;
-      color: $defaultTextColor;
+      font-size: 13px;
+      color: #666;
       transition: color 0.3s;
-    }
-    .follow-bg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 0;
-      height: 100%;
-      background-color: $mlThemeColor;
-      border-radius: 4px;
-      transition: left 0.3s, width 0.3s;
+      &.active {
+        color: $mlThemeColor;
+      }
+      @media screen and (max-width: 1130px) {
+        font-size: 12px;
+        padding: 0 5px;
+      }
     }
   }
 </style>
