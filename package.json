@@ -12,9 +12,10 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "materialize-css": "^1.0.0-rc.1",
-    "photoswipe": "^4.1.2",
-    "swiper": "^4.3.3",
+    "normalize.css": "3.0.2",
+    "photoswipe": "^4.1.1",
+    "swiper": "^4.4.1",
+    "element-ui": "2.4.6",
     "vue": "^2.5.2",
     "vue-cookies": "^1.5.6",
     "vue-lazyload": "^1.2.6",
@@ -86,5 +87,5 @@
     "type": "git",
     "url": "http://116.62.130.63:3000/FHT.FE/FHT.FE_ml_website.git"
   },
-  "license": "ISC"
+  "license": "MIT"
 }

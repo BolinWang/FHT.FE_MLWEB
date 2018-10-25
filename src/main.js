@@ -3,11 +3,13 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-
 import VueLazyload from 'vue-lazyload'
 import VueCookies from 'vue-cookies'
+import ElementUI from 'element-ui'
+import VuePreview from '@/components/Preview/plugins'
 
-import 'materialize-css/dist/js/materialize.min.js'
+import 'element-ui/lib/theme-chalk/index.css'
+import 'normalize.css/normalize.css'
 import './assets/sass/materialize.scss'
 import './assets/sass/style.scss'
 
@@ -16,7 +18,9 @@ Vue.config.productionTip = false
 Vue.use(VueLazyload, {
   loading: require('@/assets/lazyLoad@3x.png')
 })
+Vue.use(ElementUI)
 Vue.use(VueCookies)
+Vue.use(VuePreview)
 
 /* eslint-disable no-new */
 new Vue({
