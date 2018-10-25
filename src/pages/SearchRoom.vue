@@ -1,23 +1,31 @@
 /*
  * @Author: chudequan
  * @Date: 2018-07-01 17:10:30
- * @Last Modified by: chudequan
- * @Last Modified time: 2018-07-01 17:10:30
+ * @Last Modified by: FT.FE.Bolin
+ * @Last Modified time: 2018-10-25 16:28:48
  */
 <template>
   <div>
     <div class="row ml-search-container">
       <div class="city-select input-field">
-        <select ref="dropdown" v-model="cityId">
-          <option
-          :value="item.cityId"
-          v-for="(item, index) in cityList"
-          :key="index">{{item.name}}</option>
-        </select>
+        <el-select ref="dropdown" v-model="cityId">
+          <el-option
+            v-for="item in cityList"
+            :key="item.cityId"
+            :value="item.cityId"
+            :label="item.name">
+            {{item.name}}
+          </el-option>
+        </el-select>
       </div>
       <div class="ml-search">
         <i class="icon icon-search"></i>
-        <input v-model="keyword" type="text" class="browser-default" placeholder="搜索您想住的区域或小区" @keypress.enter="searchByKeyword">
+        <input
+          v-model="keyword"
+          type="text"
+          class="browser-default"
+          placeholder="搜索您想住的区域或小区"
+          @keypress.enter="searchByKeyword">
         <a class="waves-effect waves-light btn" @click="searchByKeyword">搜索</a>
       </div>
     </div>
@@ -94,9 +102,9 @@
     <div class="room-list-container" v-if="roomList.length">
       <div class="row">
         <div
-        v-for="(item, index) in roomList"
-        :key="index"
-        class="col s3">
+          v-for="(item, index) in roomList"
+          :key="index"
+          class="col s3">
           <div class="card room-card">
             <div class="card-image">
               <img v-lazy="item.src">
@@ -162,6 +170,7 @@
 
 <script>
 import SearchList from '@/components/SearchList'
+import searchParams from '@/options/search'
 import {
   getAreaListApi,
   getRoomListApi,
@@ -173,196 +182,10 @@ export default {
   },
   data () {
     return {
+      ...searchParams,
       cityId: null,
       cityList: [],
-      typeList: [
-        {
-          val: null,
-          text: '不限'
-        },
-        {
-          val: 3,
-          text: '品牌公寓'
-        },
-        {
-          val: 1,
-          text: '整租'
-        },
-        {
-          val: 2,
-          text: '合租'
-        }
-      ],
-      regionList: [
-      ],
-      rentalList: [
-        {
-          text: '不限',
-          val: {
-            minPrice: null,
-            maxPrice: null
-          }
-        },
-        {
-          text: '1500元以下',
-          val: {
-            minPrice: null,
-            maxPrice: 1500
-          }
-        },
-        {
-          text: '1500-2000元',
-          val: {
-            minPrice: 1500,
-            maxPrice: 2000
-          }
-        },
-        {
-          text: '2000-2500元',
-          val: {
-            minPrice: 2000,
-            maxPrice: 2500
-          }
-        },
-        {
-          text: '2500-3000元',
-          val: {
-            minPrice: 2500,
-            maxPrice: 3000
-          }
-        },
-        {
-          text: '3000-4000元',
-          val: {
-            minPrice: 3000,
-            maxPrice: 4000
-          }
-        },
-        {
-          text: '4000-5000元',
-          val: {
-            minPrice: 4000,
-            maxPrice: 5000
-          }
-        },
-        {
-          text: '5000元以上',
-          val: {
-            minPrice: 5000,
-            maxPrice: null
-          }
-        }
-      ],
-      chamberList: [
-        {
-          text: '不限',
-          val: {
-            min: 1,
-            max: 1
-          }
-        },
-        {
-          text: '一室',
-          val: {
-            min: 1,
-            max: 1
-          }
-        },
-        {
-          text: '二室',
-          val: {
-            min: 2,
-            max: 2
-          }
-        },
-        {
-          text: '三室',
-          val: {
-            min: 3,
-            max: 3
-          }
-        },
-        {
-          text: '四室及以上',
-          val: {
-            min: 4,
-            max: null
-          }
-        }
-      ],
-      areaList: [
-        {
-          text: '不限',
-          val: {
-            maxRoomArea: null,
-            minRoomArea: null
-          }
-        },
-        {
-          text: '40平以下',
-          val: {
-            maxRoomArea: 40,
-            minRoomArea: null
-          }
-        },
-        {
-          text: '40-60平',
-          val: {
-            maxRoomArea: 60,
-            minRoomArea: 40
-          }
-        },
-        {
-          text: '60-80平',
-          val: {
-            maxRoomArea: 80,
-            minRoomArea: 60
-          }
-        },
-        {
-          text: '80-100平',
-          val: {
-            maxRoomArea: 100,
-            minRoomArea: 80
-          }
-        },
-        {
-          text: '100-120平',
-          val: {
-            maxRoomArea: 120,
-            minRoomArea: 100
-          }
-        },
-        {
-          text: '120平以上',
-          val: {
-            maxRoomArea: null,
-            minRoomArea: 120
-          }
-        }
-      ],
-      decorationList: [
-        {
-          text: '不限',
-          val: null
-        },
-        {
-          text: '毛坯',
-          val: '1'
-        },
-        {
-          text: '简装',
-          val: '2'
-        },
-        {
-          text: '精装',
-          val: '3'
-        },
-        {
-          text: '豪华',
-          val: '4'
-        }
-      ],
+      regionList: [],
       pageCount: 0,
       curPage: 0,
       roomList: [],
@@ -393,6 +216,12 @@ export default {
       }
       return arr
     }
+  },
+  created () {
+    this.getCityList()
+  },
+  mounted () {
+
   },
   methods: {
     setFilterList () {
@@ -453,9 +282,7 @@ export default {
       getRoomListApi(params).then((res) => {
         this.isLoading = false
         if (Number(res.code) !== 0) {
-          /* eslint-disable */
-          M.toast({html: res.message})
-          /* eslint-enable */
+          this.$message.info(res.message || '网络出小差o(╥﹏╥)o')
           return
         }
         let data = res.data
@@ -508,15 +335,17 @@ export default {
     },
     getCityList () {
       getCityListApi().then((res) => {
-        if (Number(res.code) !== 0) {
+        if (res.code * 1 !== 0) {
           return
         }
-        res.data.cityList.forEach((item, index) => {
-          this.cityList.push({
+        this.cityList = res.data.cityList.map(item => {
+          return {
             cityId: item.areaId,
             name: item.areaName
-          })
+          }
         })
+        this.cityId = this.$cookies.get('MLUSERCITY') * 1 || 330100
+        this.getAreaList()
       })
     },
     getAreaList () {
@@ -574,9 +403,7 @@ export default {
     },
     searchByKeyword () {
       if (this.keyword === '') {
-        /* eslint-disable */
-        M.toast({html: '搜索条件不能为空！'})
-        /* eslint-enable */
+        this.$message.info('搜索条件不能为空！')
         return
       }
       let params = {}
@@ -596,30 +423,13 @@ export default {
     '$route' (to, from) {
       this.$router.go(0)
     },
-    cityList () {
-      this.$nextTick(() => {
-        /* eslint-disable */
-        M.FormSelect.init(this.$refs.dropdown)
-        /* eslint-enable */
-        document.querySelectorAll('.dropdown-content')[0].style.height = '500px'
-      })
-    },
     cityId (newVal, oldVal) {
       if (!oldVal || newVal === oldVal) {
         return
       }
-      // this.$cookies.remove('MLUSERCITY')
-      this.$cookies.set('MLUSERCITY', newVal, 60 * 60 * 24 * 30, '/')
+      this.$cookies.set('MLUSERCITY', newVal * 1, 60 * 60 * 24 * 30, '/')
       location.href = '/search'
     }
-  },
-  mounted () {
-    this.cityId = this.$cookies.get('MLUSERCITY') || '330100'
-    this.getCityList()
-    this.getAreaList()
-  },
-  created () {
-
   }
 }
 </script>
@@ -651,16 +461,6 @@ export default {
     width: 800px;
     height: 44px;
     background-color: #fff;
-    .icon-search {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      width: 16px;
-      height: 16px;
-      background-image: url(../assets/images/search-icon.png);
-      background-size: 100%;
-      display: none;
-    }
     input {
       position: relative;
       flex: 1;
@@ -943,4 +743,14 @@ export default {
     text-align: center;
     color: #666;
   }
+</style>
+
+<style lang="scss">
+.ml-search-container {
+  .el-select input {
+    padding: 0 15px;
+    margin: 0;
+    border-bottom: 0 none !important;
+  }
+}
 </style>
