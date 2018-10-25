@@ -1,9 +1,6 @@
 <template>
-  <div>
-    <a class="waves-effect waves-teal btn-flat" @click="showPhoto">我要看图片</a>
-    <photo-swipe ref="modal1" :photoList="bannerList" :options="photoViewOptions">
-    </photo-swipe>
-  </div>
+  <photo-swipe ref="modal1" :picList="bannerList">
+  </photo-swipe>
 </template>
 
 <script>
@@ -16,38 +13,34 @@ export default {
     return {
       bannerList: [
         {
-          src: 'https://placekitten.com/600/400',
-          w: 600,
-          h: 400
+          src: 'https://fh-online.oss-cn-hangzhou.aliyuncs.com/20170330210510519316',
+          w: 1200,
+          h: 900
         },
         {
-          src: 'https://placekitten.com/1200/900',
+          src: 'https://fh-online.oss-cn-hangzhou.aliyuncs.com/20170330210514913667',
+          w: 1200,
+          h: 900
+        },
+        {
+          src: 'https://fh-online.oss-cn-hangzhou.aliyuncs.com/20170330210520779615',
+          w: 1200,
+          h: 900
+        },
+        {
+          src: 'https://fh-online.oss-cn-hangzhou.aliyuncs.com/20170330210526170359',
+          w: 1200,
+          h: 900
+        },
+        {
+          src: 'https://fh-online.oss-cn-hangzhou.aliyuncs.com/20170330210532591268',
           w: 1200,
           h: 900
         }
-      ],
-      photoViewOptions: {
-        loop: true,
-
-        // 如果需要分页器
-        pagination: {
-          el: '.swiper-pagination'
-        },
-
-        // 如果需要前进后退按钮
-        navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev'
-        }
-      }
+      ]
     }
   },
   methods: {
-    showPhoto () {
-      this.$refs.modal1.showPhoto()
-    }
-  },
-  mounted () {
 
   }
 }
