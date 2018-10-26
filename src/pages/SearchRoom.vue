@@ -2,7 +2,7 @@
  * @Author: chudequan
  * @Date: 2018-07-01 17:10:30
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-10-26 10:46:17
+ * @Last Modified time: 2018-10-26 17:37:08
  */
 <template>
   <div>
@@ -181,6 +181,7 @@ import {
   getRoomListApi,
   getCityListApi
 } from '@/api/searchRoomApi'
+import ConvertPinyin from '@/utils/pinyin'
 export default {
   components: {
     SearchList
@@ -232,7 +233,7 @@ export default {
     cityChange (cityId) {
       const cityInfo = this.cityList.filter(item => item.cityId === cityId)[0] || {}
       store.dispatch('UPDATECITY', cityInfo).then(() => {
-        location.href = '/search'
+        this.routerRefresh()
       })
     },
     setFilterList () {
@@ -384,20 +385,14 @@ export default {
       if (this.$route.query.keyword) {
         params.keyword = this.$route.query.keyword
       }
-
       params.page = index
-      this.$router.push({
-        path: '/search',
-        query: params
-      })
+      this.routerRefresh(params)
     },
     deleteChipList () {
       for (let n in this.filterList) {
         this.filterList[n] = 0
       }
-      this.$router.push({
-        path: '/search'
-      })
+      this.routerRefresh()
     },
     changeFilterList (key, val) {
       this.filterList[key] = val
@@ -407,10 +402,7 @@ export default {
           params[k] = this.filterList[k]
         }
       }
-      this.$router.push({
-        path: '/search',
-        query: params
-      })
+      this.routerRefresh(params)
     },
     searchByKeyword () {
       if (this.keyword === '') {
@@ -424,9 +416,14 @@ export default {
         }
       }
       params.keyword = this.keyword
+      this.routerRefresh(params)
+    },
+    routerRefresh (query) {
+      const cityNamePinyin = ConvertPinyin(this.$store.state.user.cityInfo.name)
+      const currentPath = (this.$route.meta && this.$route.meta.redirect) ? this.$route.meta.redirect : this.$route.path
       this.$router.push({
-        path: '/search',
-        query: params
+        path: `/${cityNamePinyin}/${currentPath}`,
+        query
       })
     }
   },

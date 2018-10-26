@@ -16,6 +16,10 @@ const env = require('../config/prod.env')
 const PrerenderSPAPlugin = require('prerender-spa-plugin')
 const Renderer = PrerenderSPAPlugin.PuppeteerRenderer
 
+const resolve = (dir) => {
+  return path.join(__dirname, '..', dir)
+}
+
 const webpackConfig = merge(baseWebpackConfig, {
   module: {
     rules: utils.styleLoaders({
@@ -67,6 +71,8 @@ const webpackConfig = merge(baseWebpackConfig, {
       filename: config.build.index,
       template: 'index.html',
       inject: true,
+      favicon: resolve('favicon.ico'),
+      title: '麦邻租房',
       minify: {
         removeComments: true,
         collapseWhitespace: true,
