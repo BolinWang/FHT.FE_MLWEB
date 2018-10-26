@@ -2,13 +2,17 @@
  * @Author: chudequan
  * @Date: 2018-07-01 17:10:30
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-10-25 16:28:48
+ * @Last Modified time: 2018-10-26 10:46:17
  */
 <template>
   <div>
     <div class="row ml-search-container">
       <div class="city-select input-field">
-        <el-select ref="dropdown" v-model="cityId">
+        <el-select
+          ref="dropdown"
+          filterable
+          v-model="cityId"
+          @change="cityChange">
           <el-option
             v-for="item in cityList"
             :key="item.cityId"
@@ -171,6 +175,7 @@
 <script>
 import SearchList from '@/components/SearchList'
 import searchParams from '@/options/search'
+import store from '@/store'
 import {
   getAreaListApi,
   getRoomListApi,
@@ -224,6 +229,12 @@ export default {
 
   },
   methods: {
+    cityChange (cityId) {
+      const cityInfo = this.cityList.filter(item => item.cityId === cityId)[0] || {}
+      store.dispatch('UPDATECITY', cityInfo).then(() => {
+        location.href = '/search'
+      })
+    },
     setFilterList () {
       for (let k in this.$route.query) {
         if (this.filterList[k] !== undefined) {
@@ -344,7 +355,7 @@ export default {
             name: item.areaName
           }
         })
-        this.cityId = this.$cookies.get('MLUSERCITY') * 1 || 330100
+        this.cityId = this.$store.state.user.cityInfo.cityId || 330100
         this.getAreaList()
       })
     },
@@ -422,13 +433,6 @@ export default {
   watch: {
     '$route' (to, from) {
       this.$router.go(0)
-    },
-    cityId (newVal, oldVal) {
-      if (!oldVal || newVal === oldVal) {
-        return
-      }
-      this.$cookies.set('MLUSERCITY', newVal * 1, 60 * 60 * 24 * 30, '/')
-      location.href = '/search'
     }
   }
 }

@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import store from './store'
 import VueLazyload from 'vue-lazyload'
 import VueCookies from 'vue-cookies'
 import ElementUI from 'element-ui'
@@ -26,6 +27,7 @@ Vue.use(VuePreview)
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>',
   mounted () {
