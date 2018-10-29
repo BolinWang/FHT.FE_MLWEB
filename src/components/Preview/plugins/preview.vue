@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 16:50:01
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-10-25 20:39:55
+ * @Last Modified time: 2018-10-29 10:41:54
  */
 
 <template>
@@ -82,6 +82,8 @@ export default {
         history: false,
         shareEl: false,
         tapToClose: true,
+        counterEl: true,
+        preloaderEl: true,
         /* 下载按钮显示 */
         downloadEl: true
       },
@@ -108,13 +110,13 @@ export default {
       this.photoswipe.init()
       // 默认下载当前index图片
       this.downloadImageUrl = list[index].src
-      this.downloadImageName = `麦滴管家_${list[index].title}`
+      this.downloadImageName = `麦邻租房_${list[index].title}`
 
       /* 监听图片变换，替换当前下载图片链接 */
       this.photoswipe.listen('afterChange', (e) => {
         this.rotateCount = 0
         this.downloadImageUrl = list[this.photoswipe.getCurrentIndex() || 0].src
-        this.downloadImageName = `麦滴管家_${list[this.photoswipe.getCurrentIndex() || 0].title}`
+        this.downloadImageName = `麦邻租房_${list[this.photoswipe.getCurrentIndex() || 0].title}`
       })
     },
     close () {

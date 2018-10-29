@@ -9,7 +9,7 @@
               class="swiper-slide"
               v-for="(item, index) in picList"
               :key="index"
-              @click="openPreview">
+              @click="openPreview(index)">
               <img class="preview-img" v-lazy="item.src" alt="" title="">
             </div>
           </div>
@@ -99,12 +99,12 @@ export default {
     })
   },
   methods: {
-    openPreview () {
+    openPreview (index) {
       if (!this.picList || this.picList.length === 0) {
         this.$message.error('图片预览失败')
         return false
       }
-      this.$preview.open(0, this.picList)
+      this.$preview.open(index, this.picList)
     }
   }
 }
