@@ -74,7 +74,7 @@ export default {
         spaceBetween: 10,
         loop: true,
         loopedSlides: 5,
-        effect: 'cube',
+        effect: 'coverflow',
         cube: {
           slideShadows: true,
           shadow: true,

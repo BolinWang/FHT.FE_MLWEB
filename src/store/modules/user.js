@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-10-26 10:06:11
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-10-26 10:47:11
+ * @Last Modified time: 2018-10-30 17:30:22
  */
 
 import { getCityInfo, setCityInfo } from '@/utils/auth'

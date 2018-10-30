@@ -2,26 +2,11 @@
  * @Author: chudequan
  * @Date: 2018-07-01 17:10:30
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-10-26 17:37:08
+ * @Last Modified time: 2018-10-30 17:46:49
  */
 <template>
   <div>
     <div class="row ml-search-container">
-      <div class="city-select input-field">
-        <el-select
-          ref="dropdown"
-          filterable
-          v-model="cityId"
-          @change="cityChange">
-          <el-option
-            v-for="item in cityList"
-            :key="item.cityId"
-            :value="item.cityId"
-            :label="item.name">
-            {{item.name}}
-          </el-option>
-        </el-select>
-      </div>
       <div class="ml-search">
         <i class="icon icon-search"></i>
         <input
@@ -175,12 +160,7 @@
 <script>
 import SearchList from '@/components/SearchList'
 import searchParams from '@/options/search'
-import store from '@/store'
-import {
-  getAreaListApi,
-  getRoomListApi,
-  getCityListApi
-} from '@/api/searchRoomApi'
+import { searchApi } from '@/api/searchRoomApi'
 import ConvertPinyin from '@/utils/pinyin'
 export default {
   components: {
@@ -230,12 +210,6 @@ export default {
 
   },
   methods: {
-    cityChange (cityId) {
-      const cityInfo = this.cityList.filter(item => item.cityId === cityId)[0] || {}
-      store.dispatch('UPDATECITY', cityInfo).then(() => {
-        this.routerRefresh()
-      })
-    },
     setFilterList () {
       for (let k in this.$route.query) {
         if (this.filterList[k] !== undefined) {
@@ -291,11 +265,10 @@ export default {
         fullRentType: 1,
         pageSize: 20
       }, params)
-      getRoomListApi(params).then((res) => {
+      searchApi.getRoomList(params).then((res) => {
         this.isLoading = false
-        if (Number(res.code) !== 0) {
-          this.$message.info(res.message || '网络出小差o(╥﹏╥)o')
-          return
+        if (res.code * 1 !== 0) {
+          return false
         }
         let data = res.data
         this.pageCount = data.totalPages
@@ -346,22 +319,12 @@ export default {
       }
     },
     getCityList () {
-      getCityListApi().then((res) => {
-        if (res.code * 1 !== 0) {
-          return
-        }
-        this.cityList = res.data.cityList.map(item => {
-          return {
-            cityId: item.areaId,
-            name: item.areaName
-          }
-        })
-        this.cityId = this.$store.state.user.cityInfo.cityId || 330100
-        this.getAreaList()
-      })
+      this.cityList = JSON.parse(localStorage.getItem('ML_CITYLIST') || '[]')
+      this.cityId = this.$store.state.user.cityInfo.cityId || 330100
+      this.getAreaList()
     },
     getAreaList () {
-      getAreaListApi({
+      searchApi.getAreaList({
         cityId: this.cityId
       }).then((res) => {
         this.setFilterList()
@@ -450,7 +413,7 @@ export default {
   .ml-search-container {
     display: flex;
     align-items: center;
-    margin-top: 40px;
+    margin-top: 20px;
     .dropdown-content {
       max-height: 300px !important;
       overflow-y: scroll;
@@ -483,6 +446,9 @@ export default {
       font-size: 18px;
       background-color: $mlThemeColor;
       box-shadow: none;
+      &:hover {
+        color: #fff;
+      }
     }
   }
   .city-select {

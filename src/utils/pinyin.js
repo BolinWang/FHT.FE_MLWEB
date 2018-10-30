@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-10-26 17:21:00
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-10-26 17:27:24
+ * @Last Modified time: 2018-10-30 15:51:10
  */
 
 const PinYin = {
@@ -409,10 +409,18 @@ const PinYin = {
   'bia': '\u9adf'
 }
 
+let options = {
+  uc: false
+}
+
 // 汉字转拼音
-const ConvertPinyin = (l1) => {
+const ConvertPinyin = (l1 = '', uc = false) => {
+  if (!l1) {
+    return ''
+  }
   let l2 = l1.length
   let I1 = ''
+  options.uc = uc || false
   // eslint-disable-next-line
   let reg = new RegExp('[a-zA-Z0-9\- ]')
   for (let i = 0; i < l2; i++) {
@@ -435,19 +443,18 @@ const ConvertPinyin = (l1) => {
 const arraySearch = (l1, l2) => {
   for (var name in PinYin) {
     if (PinYin[name].indexOf(l1) !== -1) {
-      return name
+      return options.uc ? ucfirst(name) : name
     }
   }
   return false
 }
 
-// // 首字母大写
-// const ucfirst = (l1) => {
-//   if (l1.length > 0) {
-//     let first = l1.substr(0, 1).toUpperCase()
-//     let spare = l1.substr(1, l1.length)
-//     return first + spare
-//   }
-// }
+// 首字母大写
+const ucfirst = (l1) => {
+  if (l1.length > 0) {
+    let first = l1.substr(0, 1).toUpperCase()
+    return first
+  }
+}
 
 export default ConvertPinyin

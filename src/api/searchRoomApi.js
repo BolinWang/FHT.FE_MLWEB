@@ -1,37 +1,28 @@
-import fetch from '@/utils/fetch'
+import { fetch } from '@/utils/fetch'
 
-/* 获取区域数据 */
-export function getAreaListApi (params = {}) {
-  return fetch({
-    url: '/api/search',
-    method: 'post',
-    data: {
+export const searchApi = {
+  requestPath: '/api/search',
+  /* 获取区域数据 */
+  getAreaList (params = {}) {
+    return fetch(this.requestPath, {
       method: 'areaListWithHouse',
       params
-    }
-  })
-}
-
-/* 获取房源列表 */
-export function getRoomListApi (params = {}) {
-  return fetch({
-    url: '/api/search',
-    method: 'post',
-    data: {
+    })
+  },
+  /* 获取房源列表 */
+  getRoomList (params = {}) {
+    return fetch(this.requestPath, {
       method: 'searchByPage',
       params
-    }
-  })
-}
-
-/* 获取城市列表 */
-export function getCityListApi (params = {}) {
-  return fetch({
-    url: '/api/search',
-    method: 'post',
-    data: {
+    }, {
+      interceptors: false
+    })
+  },
+  /* 获取城市列表 */
+  getCityList (params = {}) {
+    return fetch(this.requestPath, {
       method: 'cityList',
       params
-    }
-  })
+    })
+  }
 }
