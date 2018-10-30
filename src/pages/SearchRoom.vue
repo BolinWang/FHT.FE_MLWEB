@@ -2,7 +2,7 @@
  * @Author: chudequan
  * @Date: 2018-07-01 17:10:30
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-10-30 17:46:49
+ * @Last Modified time: 2018-10-30 18:50:18
  */
 <template>
   <div>
@@ -57,11 +57,11 @@
             <span class="title">已选</span>
             <span class="delete" @click="deleteChipList"><i class="icon icon-delete"></i>删除选项</span>
             <div
-            class="chip"
-            v-for="item in chipList"
-            :key="item.text">
+              class="chip"
+              v-for="item in chipList"
+              :key="item.text">
               {{item.text}}
-              <i class="close material-icons" @click="filterList[item.from] = 0">close</i>
+              <i class="close material-icons" @click="deleteSingle(item)">close</i>
             </div>
           </div>
         </div>
@@ -356,6 +356,14 @@ export default {
         this.filterList[n] = 0
       }
       this.routerRefresh()
+    },
+    deleteSingle (item) {
+      this.filterList[item.from] = 0
+      if (this.chipList.length) {
+        this.getRoomList()
+      } else {
+        this.routerRefresh()
+      }
     },
     changeFilterList (key, val) {
       this.filterList[key] = val
