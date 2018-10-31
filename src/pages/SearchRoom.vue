@@ -2,7 +2,7 @@
  * @Author: chudequan
  * @Date: 2018-07-01 17:10:30
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-10-30 18:50:18
+ * @Last Modified time: 2018-10-31 11:09:05
  */
 <template>
   <div>
@@ -359,11 +359,16 @@ export default {
     },
     deleteSingle (item) {
       this.filterList[item.from] = 0
-      if (this.chipList.length) {
-        this.getRoomList()
-      } else {
-        this.routerRefresh()
+      let params = {}
+      for (let k in this.filterList) {
+        if (this.filterList[k] !== 0) {
+          params[k] = this.filterList[k]
+        }
       }
+      if (this.$route.query.keyword) {
+        params.keyword = this.$route.query.keyword
+      }
+      this.routerRefresh(params)
     },
     changeFilterList (key, val) {
       this.filterList[key] = val

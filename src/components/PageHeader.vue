@@ -14,7 +14,8 @@
               v-model="searchCity"
               @change="changeCity"
               @keydown.native.enter="changeCity"
-              clearable>
+              clearable
+              class="input_select_city">
             </el-input>
             <div class="city_items" v-loading="loading">
               <ul v-if="sortCityList.length">
@@ -41,16 +42,53 @@
       </div>
       <div class="container_main--right">
         <ul>
-          <li
-            v-for="item in pageLinks"
-            :key="item.title"
-            @click="openLink(item)"
-            class="linkItem">
-            {{item.title}}
-          </li>
+          <template v-for="item in pageLinks">
+            <el-popover
+              v-if="item.type === 'popover'"
+              :key="item.title"
+              title="APP下载"
+              trigger="hover"
+              content="APP下载">
+              <li
+                slot="reference"
+                class="linkItem"
+                style="padding-right: 20px;">
+                {{item.title}}
+              </li>
+            </el-popover>
+            <li
+              v-else
+              :key="item.title"
+              @click="openLink(item)"
+              class="linkItem">
+              {{item.title}}
+            </li>
+          </template>
         </ul>
       </div>
     </div>
+    <el-dialog
+      title="房东入驻"
+      :visible.sync="showUserRequest"
+      center
+      :modal-append-to-body="false"
+      width="30%">
+      <el-form :model="form">
+        <el-form-item label="活动名称" label-width="100">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="活动区域" label-width="100">
+          <el-select v-model="form.region" placeholder="请选择活动区域">
+            <el-option label="区域一" value="shanghai"></el-option>
+            <el-option label="区域二" value="beijing"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="showUserRequest = false">取 消</el-button>
+        <el-button type="primary" @click="showUserRequest = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </section>
 </template>
 
@@ -67,20 +105,27 @@ export default {
       cityName: this.$store.state.user.cityInfo.name || '杭州',
       sortCityList,
       pageLinks: [{
-        title: '首页'
+        title: '首页',
+        isHome: true,
+        type: 'link',
+        link: process.env.WEB_LINK
       }, {
         title: '立即找房',
-        link: ''
+        type: 'link',
+        link: this.$route.path
       }, {
         title: 'APP下载',
-        link: ''
+        type: 'popover'
       }, {
         title: '房东入驻',
-        link: ''
+        type: 'userRequest'
       }, {
         title: '商业合作',
-        link: ''
-      }]
+        type: 'bizpartner'
+      }],
+      showUserRequest: false,
+      showBizpartner: false,
+      form: {}
     }
   },
   methods: {
@@ -100,15 +145,39 @@ export default {
       if (this.searchCity) {
         this.loading = true
         setTimeout(() => {
-          this.sortCityList = sortCityList.filter(item => {
-            return (item.city.filter(city => {
+          this.sortCityList = (sortCityList.map(item => {
+            let filterCity = item.city.filter(city => {
               return city.name.toLowerCase().indexOf(this.searchCity.toLowerCase()) > -1
-            })).length
-          })
+            })
+            if (filterCity.length) {
+              return {
+                char: item.char,
+                city: filterCity
+              }
+            }
+          })).filter(arr => arr)
           this.loading = false
         }, 200)
       } else {
         this.sortCityList = sortCityList
+      }
+    },
+    openLink (item) {
+      switch (item.type) {
+        default:
+        case 'link':
+          if (item.isHome) {
+            window.open(item.link)
+          } else {
+            location.href = item.link
+          }
+          break
+        case 'userRequest':
+          this.showUserRequest = true
+          break
+        case 'bizpartner':
+          this.showBizpartner = true
+          break
       }
     }
   }
@@ -219,15 +288,22 @@ export default {
       &.char {
         font-weight: 600;
         color: #333;
+        display: inline-block;
+        width: 20px;
       }
       &.city {
         cursor: pointer;
-        margin-left: 10px;
       }
     }
   }
   .noCity {
+    padding: 10px;
     color: #ddd;
   }
+}
+.input_select_city input {
+  border: 0 none;
+  border-bottom: 1px solid #ccc;
+  border-radius: 0;
 }
 </style>
