@@ -12,32 +12,24 @@ export default {
   data () {
     return {
       bannerList: [
-        {
-          src: 'https://fh-online.oss-cn-hangzhou.aliyuncs.com/20170330210510519316',
-          w: 1200,
-          h: 900
-        },
-        {
-          src: 'https://fh-online.oss-cn-hangzhou.aliyuncs.com/20170330210514913667',
-          w: 1200,
-          h: 900
-        },
-        {
-          src: 'https://fh-online.oss-cn-hangzhou.aliyuncs.com/20170330210520779615',
-          w: 1200,
-          h: 900
-        },
-        {
-          src: 'https://fh-online.oss-cn-hangzhou.aliyuncs.com/20170330210526170359',
-          w: 1200,
-          h: 900
-        },
-        {
-          src: 'https://fh-online.oss-cn-hangzhou.aliyuncs.com/20170330210532591268',
-          w: 1200,
-          h: 900
+        'https://fh-online.oss-cn-hangzhou.aliyuncs.com/20180814173944461741',
+        'https://fh-online.oss-cn-hangzhou.aliyuncs.com/20180814173944260120',
+        'https://fh-online.oss-cn-hangzhou.aliyuncs.com/20180814173945440908',
+        'https://fh-online.oss-cn-hangzhou.aliyuncs.com/20180814173947015821',
+        'https://fh-online.oss-cn-hangzhou.aliyuncs.com/20180814173949633783',
+        'https://fh-online.oss-cn-hangzhou.aliyuncs.com/20180814173949904034',
+        'https://fh-online.oss-cn-hangzhou.aliyuncs.com/20180814173950198488',
+        'https://fh-online.oss-cn-hangzhou.aliyuncs.com/20180814173951400465',
+        'https://fh-online.oss-cn-hangzhou.aliyuncs.com/20180814173952177743',
+        'https://fh-online.oss-cn-hangzhou.aliyuncs.com/20180814173953631639',
+        'https://fh-online.oss-cn-hangzhou.aliyuncs.com/20180827112520176848'
+      ].map(item => {
+        return {
+          src: item,
+          w: 800,
+          h: 600
         }
-      ]
+      })
     }
   },
   methods: {

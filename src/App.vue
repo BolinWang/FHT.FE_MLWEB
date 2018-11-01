@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <PageHeader/>
-    <div class="ml-main" id="aaa">
+    <div class="ml-main">
       <router-view/>
     </div>
     <PageFooter/>
@@ -61,15 +61,12 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   color: $defaultTextColor;
   box-sizing: border-box;
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
-  align-items: center;
   margin: 0 auto;
 }
 .ml-main {
-  flex: 1 0 auto;
-  width: 1200px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 </style>
 <style lang="scss">

@@ -2,10 +2,10 @@
  * @Author: chudequan
  * @Date: 2018-07-01 17:10:30
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-10-31 18:35:21
+ * @Last Modified time: 2018-11-01 18:49:33
  */
 <template>
-  <div>
+  <div class="page_container">
     <div class="row ml-search-container">
       <div class="ml-search">
         <i class="icon icon-search"></i>
@@ -407,7 +407,8 @@ export default {
       let query = {
         houseType: item.type,
         estateRoomTypeId: item.type === 1 ? item.id : undefined,
-        roomId: item.type === 2 ? item.id : undefined
+        roomId: item.type === 2 ? item.id : undefined,
+        rentPrice: item.type === 1 ? item.minRentPrice : undefined
       }
       this.$router.push({
         path: `/${this.$route.path}/${item.roomCode}`,
@@ -424,6 +425,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.page_container {
+  width: 1200px;
+}
   @font-face {
     font-family: "FuturaStd-Condensed";
     src: url(../assets/FuturaStd-Condensed.otf)

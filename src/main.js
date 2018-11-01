@@ -5,7 +5,6 @@ import App from './App'
 import router from './router'
 import store from './store'
 import VueLazyload from 'vue-lazyload'
-import VueCookies from 'vue-cookies'
 import ElementUI from 'element-ui'
 import VuePreview from '@/components/Preview/plugins'
 
@@ -20,7 +19,6 @@ Vue.use(VueLazyload, {
   loading: require('@/assets/lazyLoad@3x.png')
 })
 Vue.use(ElementUI)
-Vue.use(VueCookies)
 Vue.use(VuePreview)
 
 /* eslint-disable no-new */

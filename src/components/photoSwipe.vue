@@ -2,33 +2,30 @@
   <div class="swiper-container">
     <div class="swiper-content">
       <div class="swiper-wrap">
-        <!-- Swiper -->
-        <div class="swiper-container gallery-top">
-          <div class="swiper-wrapper">
-            <div
-              class="swiper-slide"
-              v-for="(item, index) in picList"
-              :key="index"
-              @click="openPreview(index)">
-              <img class="preview-img" v-lazy="item.src" alt="" title="">
-            </div>
-          </div>
-        </div>
+        <!-- swiper1 -->
+        <swiper :options="swiperOptionTop" class="gallery-top" ref="swiperTop">
+          <swiper-slide
+            v-for="(item, index) in picListTop"
+            :key="index"
+            :data-background="item.src"
+            @click.native="openPreview(index)"
+            class="swiper-slide preview-img swiper-lazy">
+            <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+          </swiper-slide>
+        </swiper>
+        <!-- swiper2 Thumbs -->
         <div class="content__thumb">
-          <!-- Add Arrows -->
-          <div v-if="picList.length" class="swiper-button-next swiper-button-white"></div>
-          <div v-if="picList.length" class="swiper-button-prev swiper-button-white"></div>
-          <div class="swiper-container gallery-thumbs">
-            <div class="swiper-wrapper">
-              <div
-                class="swiper-slide"
-                v-for="(item, index) in picList"
-                :key="index"
-                style="margin-right: 10px;">
-                <img v-lazy="item.src" alt="" title="">
-              </div>
-            </div>
-          </div>
+          <div class="swiper-button-next swiper-button-white" slot="button-next"></div>
+          <div class="swiper-button-prev swiper-button-white" slot="button-prev"></div>
+          <swiper :options="swiperOptionThumbs" class="gallery-thumbs" ref="swiperThumbs">
+            <swiper-slide
+              v-for="(item, index) in picListThumbs"
+              :key="index"
+              :data-background="item.src"
+               class="swiper-slide swiper-lazy" >
+              <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+            </swiper-slide>
+          </swiper>
         </div>
       </div>
     </div>
@@ -36,71 +33,60 @@
 </template>
 
 <script>
-import Swiper from 'swiper/dist/js/swiper.min.js'
-import 'swiper/dist/css/swiper.min.css'
+import 'swiper/dist/css/swiper.css'
+import { swiper, swiperSlide } from 'vue-awesome-swiper'
 export default {
+  name: 'fhtSwiper',
+  components: {
+    swiper,
+    swiperSlide
+  },
   props: {
     picList: {
       type: Array,
       default: () => []
-    },
-    options: {
-      type: Object,
-      default: () => {
-        return {
-          loop: true,
-
-          // 如果需要分页器
-          pagination: {
-            el: '.swiper-pagination'
-          },
-
-          // 如果需要前进后退按钮
-          navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev'
-          }
-        }
-      }
     }
   },
   data () {
     return {
-
+      picListThumbs: [],
+      picListTop: []
     }
   },
-  mounted () {
-    this.$nextTick(() => {
-      const galleryTop = new Swiper('.gallery-top', {
+  computed: {
+    swiperOptionTop () {
+      return {
+        lazy: true,
         spaceBetween: 10,
         loop: true,
-        loopedSlides: 6,
-        effect: 'coverflow',
-        cube: {
-          slideShadows: true,
-          shadow: true,
-          shadowOffset: 10,
-          shadowScale: 0.6
-        }
-      })
-      const galleryThumbs = new Swiper('.gallery-thumbs', {
-        spaceBetween: 10,
-        slidesPerView: 5,
-        touchRatio: 0.2,
-        loop: true,
-        loopedSlides: 6,
-        slideToClickedSlide: true,
+        loopedSlides: this.picList.length,
         navigation: {
           nextEl: '.swiper-button-next',
           prevEl: '.swiper-button-prev'
         }
-      })
-      galleryTop.controller.control = galleryThumbs
-      galleryThumbs.controller.control = galleryTop
+      }
+    },
+    swiperOptionThumbs () {
+      return {
+        lazy: true,
+        spaceBetween: 10,
+        slidesPerView: 5,
+        loop: true,
+        slideToClickedSlide: true,
+        loopedSlides: this.picList.length
+      }
+    }
+  },
+  mounted () {
+    this.$nextTick(() => {
+      const swiperTop = this.$refs.swiperTop.swiper
+      const swiperThumbs = this.$refs.swiperThumbs.swiper
+      swiperTop.controller.control = swiperThumbs
+      swiperThumbs.controller.control = swiperTop
     })
   },
   methods: {
-    async openPreview (index) {
+    openPreview (index) {
       if (!this.picList || this.picList.length === 0) {
         this.$message.error('图片预览失败')
         return false
@@ -120,6 +106,22 @@ export default {
       // }
       this.$preview.open(index, this.picList)
     }
+  },
+  watch: {
+    picList: {
+      immediate: true,
+      handler (val) {
+        this.$set(this, 'picListTop', val)
+        const thums = val.map(item => {
+          return {
+            src: item.src,
+            w: 200,
+            height: 150
+          }
+        })
+        this.$set(this, 'picListThumbs', thums)
+      }
+    }
   }
 }
 </script>
@@ -127,7 +129,7 @@ export default {
 <style scoped lang="scss">
 .swiper-container {
   outline: none;
-  background-color: transparent;
+  background-color: #fff;
   box-shadow: none;
   height: 100%;
   .swiper-content {
@@ -149,7 +151,7 @@ export default {
 .gallery-top {
   width: 720px;
   height: 540px;
-  img {
+  .swiper-slide {
     width: 100%;
     height: 100%;
   }
@@ -161,10 +163,6 @@ export default {
   .gallery-thumbs {
     height: 102px;
     box-sizing: border-box;
-    img {
-      height: 102px;
-      width: 136px;
-    }
     .swiper-slide {
       height: 100%;
       opacity: 0.4;

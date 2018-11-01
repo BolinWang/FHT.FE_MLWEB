@@ -45,7 +45,7 @@ export default [
   },
   {
     path: '/search/roomDetail',
-    name: '房间详情',
+    name: 'roomDetail',
     component: roomDetail,
     meta: {
       prerender: true,
