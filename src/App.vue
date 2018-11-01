@@ -69,7 +69,7 @@ export default {
 }
 .ml-main {
   flex: 1 0 auto;
-  width: 1280px;
+  width: 1200px;
 }
 </style>
 <style lang="scss">

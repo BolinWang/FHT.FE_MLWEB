@@ -70,23 +70,54 @@
     <el-dialog
       title="房东入驻"
       :visible.sync="showUserRequest"
-      center
       :modal-append-to-body="false"
-      width="30%">
-      <el-form :model="form">
-        <el-form-item label="活动名称" label-width="100">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+      center
+      width="500px"
+      :before-close="done => closeUserRequest(done, 'form_userRequest')">
+      <el-form :model="ruleForm" :rules="rules" ref="form_userRequest" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="姓名" prop="name">
+          <el-input placeholder="请填写您的姓名" v-model="ruleForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="活动区域" label-width="100">
-          <el-select v-model="form.region" placeholder="请选择活动区域">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
-          </el-select>
+        <el-form-item label="手机号码" prop="mobile">
+          <el-input placeholder="请填写您的手机号码" v-model="ruleForm.mobile"></el-input>
+        </el-form-item>
+        <el-form-item label="所在城市">
+          <el-input placeholder="请填写您的所在城市" v-model="ruleForm.housePosion"></el-input>
+        </el-form-item>
+        <el-form-item label="房间数量">
+          <el-input placeholder="请填写您的房间数量" v-model="ruleForm.houseAmount"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="showUserRequest = false">取 消</el-button>
-        <el-button type="primary" @click="showUserRequest = false">确 定</el-button>
+        <el-button class="btn_userRequest" round type="primary" @click="doUserRequest">立即预约</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="合作意向"
+      :visible.sync="showBizpartner"
+      :modal-append-to-body="false"
+      center
+      width="500px"
+      :before-close="done => closeUserRequest(done, 'form_bizpartner')">
+      <el-form :model="ruleForm" :rules="rules" ref="form_bizpartner" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="所在城市" prop="housePosion" required>
+          <el-input placeholder="请填写您的所在城市" v-model="ruleForm.housePosion"></el-input>
+        </el-form-item>
+        <el-form-item label="姓名" prop="name">
+          <el-input placeholder="请填写您的姓名" v-model="ruleForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input placeholder="请填写您的邮箱" v-model="ruleForm.email"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号码" prop="mobile">
+          <el-input placeholder="请填写您的手机号码" v-model="ruleForm.mobile"></el-input>
+        </el-form-item>
+        <el-form-item label="备注内容" prop="content">
+          <el-input type="textarea" placeholder="请填写您的合作内容" v-model="ruleForm.content"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="btn_userRequest" round type="primary" @click="doBizpartner">提交意向</el-button>
       </span>
     </el-dialog>
   </section>
@@ -94,10 +125,26 @@
 
 <script>
 import ConvertPinyin from '@/utils/pinyin'
+import { validateMobile, validateEmail } from '@/utils/validate'
+import { headerApi } from '@/api/header'
 const sortCityList = JSON.parse(localStorage.getItem('ML_SORTCITYLIST') || '[]')
 export default {
   name: 'MLheader',
   data () {
+    const validatePhone = (rule, value, callback) => {
+      if (!validateMobile(value)) {
+        callback(new Error('请输入正确的手机号'))
+      } else {
+        callback()
+      }
+    }
+    const validateisEmail = (rule, value, callback) => {
+      if (!validateEmail(value)) {
+        callback(new Error('请输入正确的邮箱'))
+      } else {
+        callback()
+      }
+    }
     return {
       searchCity: '',
       showCitySelect: false,
@@ -125,7 +172,21 @@ export default {
       }],
       showUserRequest: false,
       showBizpartner: false,
-      form: {}
+      ruleForm: {},
+      rules: {
+        name: [
+          {required: true, message: '请输入姓名', trigger: 'blur'}
+        ],
+        mobile: [
+          {required: true, trigger: 'blur', validator: validatePhone}
+        ],
+        email: [
+          {required: true, trigger: 'blur', validator: validateisEmail}
+        ],
+        housePosion: [
+          {required: true, message: '请输入您的所在城市', trigger: 'blur'}
+        ]
+      }
     }
   },
   methods: {
@@ -179,6 +240,52 @@ export default {
           this.showBizpartner = true
           break
       }
+    },
+    closeUserRequest (done, form) {
+      this.ruleForm = {}
+      this.$refs[form].clearValidate()
+      done()
+    },
+    doUserRequest () {
+      this.$refs.form_userRequest.validate((valid) => {
+        if (valid) {
+          headerApi.sendUserRequest({
+            name: this.ruleForm.name,
+            mobile: this.ruleForm.mobile,
+            housePosion: this.ruleForm.housePosion,
+            houseAmount: this.ruleForm.houseAmount
+          }).then((res) => {
+            if (!res.success) {
+              this.$message.error(res.msg || '网络错误o(╥﹏╥)o')
+              return false
+            }
+            this.$toast('提交成功！')
+          })
+        } else {
+          return false
+        }
+      })
+    },
+    doBizpartner () {
+      this.$refs.form_bizpartner.validate((valid) => {
+        if (valid) {
+          headerApi.sendBizpartner({
+            name: this.ruleForm.name,
+            mobile: this.ruleForm.mobile,
+            housePosion: this.ruleForm.housePosion,
+            email: this.ruleForm.email,
+            content: this.ruleForm.content
+          }).then((res) => {
+            if (!res.success) {
+              this.$message.error(res.msg || '网络错误o(╥﹏╥)o')
+              return false
+            }
+            this.$toast('提交成功！')
+          })
+        } else {
+          return false
+        }
+      })
     }
   }
 }
@@ -200,7 +307,7 @@ export default {
       z-index: 999;
     }
     .container_main {
-      width: 1280px;
+      width: 1200px;
       height: 100%;
       margin: 0 auto;
       justify-content: space-between;
@@ -259,6 +366,9 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+  .btn_userRequest {
+    width: 200px;
   }
 </style>
 <style lang="scss">

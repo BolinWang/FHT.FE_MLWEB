@@ -2,7 +2,7 @@
  * @Author: chudequan
  * @Date: 2018-07-01 17:10:30
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-10-31 11:09:05
+ * @Last Modified time: 2018-10-31 18:35:21
  */
 <template>
   <div>
@@ -94,7 +94,7 @@
           v-for="(item, index) in roomList"
           :key="index"
           class="col s3">
-          <div class="card room-card">
+          <div class="card room-card" @click="roomDetailPage(item)">
             <div class="card-image">
               <img v-lazy="item.src">
             </div>
@@ -270,10 +270,10 @@ export default {
         if (res.code * 1 !== 0) {
           return false
         }
-        let data = res.data
+        let data = res.data || {}
         this.pageCount = data.totalPages
         this.roomCount = data.totalRecords
-        data.resultList.forEach((item, index) => {
+        this.roomList = (data.resultList || []).map((item, index) => {
           if (item.type === 2) {
             item.info = item.name.split('·')
             item.name = item.info[1]
@@ -282,7 +282,8 @@ export default {
             }]
             item.roomArea = item.info[3] ? item.info[2] + ' ' + item.info[3] : item.info[2]
           }
-          this.roomList.push({
+          return {
+            ...item,
             src: item.imageUrl,
             name: item.name,
             region: item.region,
@@ -291,7 +292,7 @@ export default {
             decoration: item.decorationDegree,
             price: item.minRentPrice,
             tagName: item.showTagList ? item.showTagList[0].tagName : '公寓'
-          })
+          }
         })
         this.setPageList()
       })
@@ -399,6 +400,17 @@ export default {
       const currentPath = (this.$route.meta && this.$route.meta.redirect) ? this.$route.meta.redirect : this.$route.path
       this.$router.push({
         path: `/${cityNamePinyin}/${currentPath}`,
+        query
+      })
+    },
+    roomDetailPage (item) {
+      let query = {
+        houseType: item.type,
+        estateRoomTypeId: item.type === 1 ? item.id : undefined,
+        roomId: item.type === 2 ? item.id : undefined
+      }
+      this.$router.push({
+        path: `/${this.$route.path}/${item.roomCode}`,
         query
       })
     }

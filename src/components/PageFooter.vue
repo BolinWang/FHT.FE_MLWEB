@@ -51,7 +51,7 @@ export default {
     flex-direction: row;
     justify-content: space-between;
     height: 100%;
-    width: 1280px;
+    width: 1200px;
     .logo {
       width: 100px;
       height: 111px;
