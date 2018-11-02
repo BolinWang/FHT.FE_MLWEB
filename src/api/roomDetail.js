@@ -25,5 +25,13 @@ export const roomDetailApi = {
       method: 'recommendList',
       params
     })
+  },
+  /* 下单，预定房间 */
+  bookingRoomApi (params = {}) {
+    return fetch('/api/customer', {
+      v: '2.3',
+      method: 'tenantBooking',
+      params
+    })
   }
 }

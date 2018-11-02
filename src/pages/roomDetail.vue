@@ -1,5 +1,5 @@
 <template>
-  <div class="page_container">
+  <div class="page_container" v-if="detailData.roomCode || detailData.estateId">
     <section class="flex_1200">
       <levelbar></levelbar>
       <section class="content_header">
@@ -8,14 +8,14 @@
           </fht-swiper>
         </div>
         <div class="roomInfo">
-          <div class="room__title">
-            <div class="room__name" :class="{'smallSize': detailData.houseName.length > 12}">{{detailData.houseName}}</div>
+          <div class="room__title" :class="{'estate': detailData.houseRentType === 3}">
+            <div class="room__name" :class="{'smallSize': detailData.houseName && detailData.houseName.length > 12}">{{detailData.houseName}}</div>
             <div class="flex space_between">
               <div class="rent__month">
-                <span>{{detailData.price}}</span>
+                <span>{{detailData.price || detailData.rentPrice}}</span>
                 元/月
               </div>
-              <div class="rent__mode">
+              <div class="rent__mode" @click="showRentTypes = true">
                 付款方式 <i class="el-icon-arrow-right"></i>
               </div>
             </div>
@@ -28,23 +28,27 @@
               <ul>
                 <li class="infos__item">
                   <span class="label">户型</span>
-                  <span class="value">{{detailData.houseType}}</span>
+                  <span class="value">{{filterHouseType}}</span>
                 </li>
                 <li class="infos__item">
                   <span class="label">楼层</span>
-                  <span class="value">{{detailData.floorName}}</span>
+                  <span class="value">{{filterFloorName}} 层</span>
                 </li>
                 <li class="infos__item">
                   <span class="label">面积</span>
-                  <span class="value">{{detailData.houseArea}}</span>
+                  <span class="value">{{filterHouseArea}}</span>
                 </li>
-                <li class="infos__item">
+                <li class="infos__item" v-if="detailData.houseRentType !== 3">
                   <span class="label">装修</span>
                   <span class="value">{{DecorationList[detailData.decorationDegree]}}</span>
                 </li>
+                <li class="infos__item" v-else>
+                  <span class="label">房间数量</span>
+                  <span class="value">{{detailData.totalRoomCount || detailData.estateInfo.roomCount}} 间</span>
+                </li>
                 <li class="infos__item">
                   <span class="label">朝向</span>
-                  <span class="value">{{RoomDirection[detailData.roomDirection]}}</span>
+                  <span class="value">{{filterRoomDirection}}</span>
                 </li>
                 <li class="infos__item">
                   <span class="label">编号</span>
@@ -57,30 +61,55 @@
               </div>
               <div class="infos__item flex">
                 <span class="label">联系房东</span>
-                <span class="value primary">{{detailData.contactMobile}}</span>
+                <span class="value primary">{{detailData.contactMobile || detailData.telephone}}</span>
               </div>
             </div>
-            <el-button class="btn_lookRoom" type="primary">预约看房</el-button>
+            <el-button class="btn_lookRoom" type="primary" @click="showBookingRoom = true">预约看房</el-button>
           </div>
         </div>
       </section>
     </section>
     <section class="content_container">
-      <div class="room_attribute room_section">
+      <div class="room_attribute room_section" v-if="(detailData.privateFacilityItems || detailData.services || []).length">
         <h4 class="title">房间设施</h4>
         <div class="attribute__items">
           <div
             class="attribute__item"
-            v-for="item in detailData.facilityItems"
+            v-for="item in detailData.privateFacilityItems || detailData.services || []"
+            :key="item.name">
+            <img v-if="detailData.houseRentType !== 3" :src="require(`../assets/images/device/device-${item.type}.png`)" />
+            <img v-else :src="require(`../assets/images/estate-service/${item.code}.png`)" />
+            <span>{{item.name}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="room_attribute room_section" v-if="detailData.houseRentType === 2 && (detailData.facilityItems || []).length">
+        <h4 class="title">公共设施</h4>
+        <div class="attribute__items">
+          <div
+            class="attribute__item"
+            v-for="item in detailData.facilityItems || []"
             :key="item.name">
             <img :src="require(`../assets/images/device/device-${item.type}.png`)" />
             <span>{{item.name}}</span>
           </div>
         </div>
       </div>
-      <div class="room_section">
-        <h4 class="title">房间描述</h4>
-        <article class="room__desc" v-html="detailData.houseDesc"></article>
+      <div class="room_attribute room_section" v-if="detailData.houseRentType === 3 && (detailData.storeServices || []).length">
+        <h4 class="title">生活服务</h4>
+        <div class="attribute__items">
+          <div
+            class="attribute__item"
+            v-for="item in detailData.storeServices || []"
+            :key="item.name">
+            <img :src="require(`../assets/images/estate-service/${item.code}.png`)" />
+            <span>{{item.name}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="room_section" v-if="detailData.houseDesc || detailData.desc">
+        <h4 class="title">{{detailData.houseRentType === 3 ? '公寓简介' : '房间描述'}}</h4>
+        <article class="room__desc" v-html="detailData.houseDesc || detailData.desc"></article>
       </div>
       <div class="room_section room_location">
         <h4 class="title">地理位置</h4>
@@ -88,7 +117,7 @@
         <div id="map_content" class="map_content"></div>
       </div>
     </section>
-    <section class="content_footer flex_1200" v-if="detailData.similarRoomList.length > 0">
+    <section class="content_footer flex_1200" v-if="detailData.similarRoomList && detailData.similarRoomList.length">
       <div class="room_section">
         <h4 class="title">为您推荐</h4>
         <div class="room__similar">
@@ -96,6 +125,68 @@
         </div>
       </div>
     </section>
+    <el-dialog
+      title="付款方式"
+      center
+      :visible.sync="showRentTypes"
+      :modal-append-to-body="false"
+      width="600px">
+      <ul class="rentTypes_items">
+        <li
+          style="position: relative; margin-bottom: 20px;"
+          v-for="(item, index) in detailData.rentTypes"
+          :key="index">
+          <div class="rentTypes_item">
+            <div class="rentTypes_item__left">
+              <span class="name">{{item.name}}</span>
+              <span class="price">
+                <span>¥ {{item.rentPrice}}</span>
+                /月起
+              </span>
+            </div>
+            <div class="rentTypes_item__right">
+              <span class="monthNum">租期：{{item.minMonthNum}} ~ {{item.maxMonthNum}} 个月</span>
+              <span class="serviceFee">服务费：¥ {{item.serviceChargePrice}}</span>
+              <span class="deposit">押金：¥ {{item.depositPrice}}</span>
+            </div>
+            <div class="deliver"></div>
+          </div>
+        </li>
+      </ul>
+    </el-dialog>
+    <el-dialog
+      title="预约看房"
+      :visible.sync="showBookingRoom"
+      :modal-append-to-body="false"
+      center
+      width="500px"
+      @open="openBooking"
+      :before-close="done => closeDialogForm(done, 'form_booking')">
+      <el-form :model="bookingData" :rules="rules" ref="form_booking" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="姓名" prop="name">
+          <el-input placeholder="请输入您的姓名" v-model="bookingData.name"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号码" prop="phone">
+          <el-input placeholder="请输入您的手机号码" v-model="bookingData.phone"></el-input>
+        </el-form-item>
+        <el-form-item label="看房时间" prop="selectedOptions">
+          <el-cascader
+            style="width: 100%;"
+            :options="options"
+            filterable
+            v-model="bookingData.selectedOptions"
+            placeholder="请选择看房时间">
+          </el-cascader>
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input style="position: relative;" type="textarea" :maxlength="50" v-model="bookingData.remark"></el-input>
+          <span class="textNumber">还可以输入{{50 - bookingData.remark.length}}字符</span>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="btn_booking" round type="primary" @click="bookingRoom">立即预约</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -105,9 +196,11 @@ import Levelbar from '@/components/Levelbar'
 import fhtSwiper from '@/components/photoSwipe'
 import Carousel from '@/components/carousel'
 import { ObjectMap } from '@/utils'
+import { validateMobile } from '@/utils/validate'
 
 const DecorationList = ['', '毛坯', '简装', '精装修', '豪华装']
 const RoomDirection = ['', '朝南', '朝北', '朝东', '朝西', '东南', '西南', '东北', '西北']
+const weekList = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
 export default {
   name: 'roomDetail',
   components: {
@@ -118,11 +211,11 @@ export default {
   filters: {
     filterTags (val) {
       const tagsMap = {
-        '1': 'primary',
-        '2': 'success',
+        '1': 'success',
+        '2': 'info',
         '3': 'warning'
       }
-      return tagsMap[val] || 'info'
+      return tagsMap[val] || 'success'
     },
     filterTagsValue (val) {
       const tagsMap = {
@@ -133,14 +226,70 @@ export default {
       return tagsMap[val] || '整租'
     }
   },
+  computed: {
+    filterRoomDirection () {
+      let val = this.detailData.roomDirection || this.detailData.houseDirection || ''
+      if (this.detailData.houseRentType !== 3) {
+        return RoomDirection[val]
+      }
+      let derections = [...new Set(val.split(','))].map(item => {
+        return RoomDirection[item]
+      })
+      return derections.join('、')
+    },
+    filterHouseType () {
+      let val = this.detailData.houseType
+      if (this.detailData.houseRentType !== 3) {
+        return val
+      }
+      return (this.detailData.minChamber === this.detailData.maxChamber ? this.detailData.maxChamber : `${this.detailData.minChamber} ~ ${this.detailData.maxChamber}`) + ' 室'
+    },
+    filterFloorName () {
+      let val = this.detailData.floorName
+      if (this.detailData.houseRentType !== 3) {
+        return val
+      }
+      return this.detailData.minFloorNum === this.detailData.maxFloorNum ? this.detailData.maxFloorNum : `${this.detailData.minFloorNum} ~ ${this.detailData.maxFloorNum}`
+    },
+    filterHouseArea () {
+      let val = this.detailData.houseArea
+      if (this.detailData.houseRentType !== 3) {
+        return `${val} ㎡`
+      }
+      return `${this.detailData.minRoomArea} ㎡` + (this.detailData.minRoomArea === this.detailData.maxRoomArea ? '' : '起')
+    }
+  },
   data () {
+    const validatePhone = (rule, value, callback) => {
+      if (!validateMobile(value)) {
+        callback(new Error('请输入正确的手机号'))
+      } else {
+        callback()
+      }
+    }
     return {
       DecorationList,
       RoomDirection,
       picList: [],
-      detailData: {
-        houseName: ''
-      }
+      showRentTypes: false,
+      detailData: {},
+      bookingData: {
+        remark: '',
+        selectedOptions: []
+      },
+      showBookingRoom: false,
+      rules: {
+        name: [
+          {required: true, message: '请输入姓名', trigger: 'blur'}
+        ],
+        phone: [
+          {required: true, trigger: 'blur', validator: validatePhone}
+        ],
+        selectedOptions: [
+          {type: 'array', required: true, message: '请选择看房时间', trigger: 'change'}
+        ]
+      },
+      options: []
     }
   },
   created () {
@@ -159,7 +308,9 @@ export default {
         }
       })
       this.detailData.houseName = this.detailData.houseName || this.detailData.estateName || ''
-      this.detailData.similarRoomList = this.detailData.similarRoomList.length > 4 ? this.detailData.similarRoomList.slice(0, 4) : this.detailData.similarRoomList
+      if (params.houseType === 1) {
+        this.detailData.houseRentType = 3
+      }
       const position = [this.detailData.longitude, this.detailData.latitude]
       this.$nextTick(() => {
         /* 地图信息 */
@@ -190,7 +341,109 @@ export default {
         map.add(marker)
         marker.setAnimation('AMAP_ANIMATION_BOUNCE')
       })
+      this.getEstateSimilarRooms()
     })
+  },
+  methods: {
+    getEstateSimilarRooms (type) {
+      roomDetailApi.querySimilarListApi(ObjectMap({
+        cityId: this.$store.state.user.cityInfo.cityId,
+        sourceType: 2,
+        currentHousingType: this.detailData.houseRentType,
+        estateRoomTypeId: this.detailData.estateRoomTypeId,
+        rentPrice: this.detailData.rentPrice,
+        roomId: this.detailData.roomId
+      })).then((res) => {
+        let similarRoomList = res.data.resultList || []
+        this.$set(this.detailData, 'similarRoomList', similarRoomList.length > 4 ? similarRoomList.slice(0, 4) : similarRoomList)
+      })
+    },
+    closeDialogForm (done, form) {
+      this.bookingData = {
+        remark: ''
+      }
+      this.$refs[form].clearValidate()
+      done()
+    },
+    openBooking () {
+      let today = new Date()
+      let todayY = today.getFullYear()
+      let todayM = today.getMonth()
+      let todayD = today.getDate()
+      // 7天内
+      for (let i = 0; i < 7; i++) {
+        let date = new Date(todayY, todayM, todayD + i)
+        let curY = date.getFullYear()
+        let curM = date.getMonth() + 1
+        let curD = date.getDate()
+        let curDText = curD < 10 ? '0' + curD : curD
+        let curDay = date.getDay()
+        this.options.push({
+          value: `${curY}-${curM}-${curDText}`,
+          label: `${weekList[curDay]} ` + (i === 0 ? '今天' : `${curM}月${curDText}日`)
+        })
+      }
+      // 8~21点
+      let pickHList = []
+      for (let i = 8; i <= 21; i++) {
+        pickHList.push({
+          label: (i < 10 ? '0' + i : i) + '时',
+          value: (i < 10 ? '0' + i : i) + ':',
+          hour: i
+        })
+      }
+      // 00 / 30分
+      let pickMiList = []
+      pickMiList.push({
+        label: '00分',
+        value: '00:00'
+      }, {
+        label: '30分',
+        value: '30:00'
+      })
+      let todayH = today.getHours()
+      let todayMi = today.getMinutes()
+      this.options.map((item, index) => {
+        if (index === 0) {
+          if (todayMi >= 30) {
+            item.children = pickHList.slice(todayH - 7)
+          } else {
+            item.children = pickHList.slice(todayH - 8)
+          }
+        } else {
+          item.children = pickHList.slice()
+        }
+        item.children.map((child, childIndex) => {
+          if (index === 0 && childIndex === 0 && todayMi < 30) {
+            child.children = pickHList.slice(1)
+          } else {
+            child.children = pickMiList.slice()
+          }
+        })
+      })
+    },
+    bookingRoom () {
+      this.$refs.form_booking.validate((valid) => {
+        if (valid) {
+          this.doBooking()
+        } else {
+          return false
+        }
+      })
+    },
+    doBooking () {
+      const selectedDateTime = this.bookingData.selectedOptions
+      const bookingTime = `${selectedDateTime[0]} ${selectedDateTime[1]}${selectedDateTime[2]}`
+      roomDetailApi.bookingRoomApi({
+        name: this.bookingData.name,
+        phone: this.bookingData.phone,
+        bookingTime: new Date(bookingTime).getTime(),
+        housingType: this.detailData.houseRentType === 3 ? 1 : 2,
+        positionId: this.detailData.estateRoomTypeId || this.detailData.roomId
+      }).then(res => {
+        this.$toast('预约成功！')
+      })
+    }
   }
 }
 </script>
@@ -209,13 +462,26 @@ export default {
     background: #fff;
     width: 480px;
     .room__title {
-      background: url('../assets/images/web_bg_hotel.png') no-repeat center center / cover;
-      height: 166px;
-      padding: 50px 40px 30px 40px;
-      color: #fff;
+      &.estate {
+        background: url('../assets/images/web_bg_hotel.png') no-repeat center center / cover;
+        color: #fff;
+        height: 166px;
+        padding: 50px 40px 30px 40px;
+        .room__name {
+          color: #fff;
+          border-bottom: none;
+          padding-bottom: 0px;
+          margin-bottom: 0px;
+        }
+      }
+      padding: 50px 40px 0 40px;
       font-weight: 500;
       font-size: 16px;
       .room__name {
+        color: #FFA33B;
+        border-bottom: 2px solid#DADADA;
+        padding-bottom: 25px;
+        margin-bottom: 15px;
         font-size: 28px;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -349,6 +615,9 @@ export default {
       padding-top: 40px;
     }
   }
+  .rent__mode {
+    cursor: pointer;
+  }
 }
 .map_content {
   width: 886px;
@@ -363,5 +632,59 @@ export default {
     display: none !important;
     visibility: hidden !important;
   }
+}
+.rentTypes_item {
+  margin: 0 auto;
+  width: 516px;
+  height: 118px;
+  background: rgba(249,249,249,1);
+  border-radius: 4px;
+  border: 1px solid #E8E8E8;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 40px;
+  font-size: 16px;
+  color: #AAAAAA;
+  .rentTypes_item__left {
+    display: flex;
+    flex-direction: column;
+    align-content: space-between;
+    .name {
+      font-size: 20px;
+      color: #5A5A5A;
+    }
+    .price {
+      color: #FFA33B;
+      span {
+        font-size: 30px;
+      }
+    }
+  }
+  .rentTypes_item__right {
+    display: flex;
+    flex-direction: column;
+    align-content: space-between;
+  }
+  .deliver {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-top: -26px;
+    width: 1px;
+    height: 52px;
+    opacity: 0.8;
+    background: #DBDBDB;
+  }
+}
+.textNumber {
+  position: absolute;
+  bottom: 5px;
+  right: 10px;
+  color: #666;
+  font-size: 12px;
+  line-height: 1.2;
+}
+.btn_booking {
+  width: 200px;
 }
 </style>

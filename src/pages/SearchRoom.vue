@@ -2,7 +2,7 @@
  * @Author: chudequan
  * @Date: 2018-07-01 17:10:30
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-11-01 18:49:33
+ * @Last Modified time: 2018-11-02 16:44:37
  */
 <template>
   <div class="page_container">
@@ -162,6 +162,7 @@ import SearchList from '@/components/SearchList'
 import searchParams from '@/options/search'
 import { searchApi } from '@/api/searchRoomApi'
 import ConvertPinyin from '@/utils/pinyin'
+import { ObjectMap } from '@/utils'
 export default {
   components: {
     SearchList
@@ -383,8 +384,7 @@ export default {
     },
     searchByKeyword () {
       if (this.keyword === '') {
-        this.$message.info('搜索条件不能为空！')
-        return
+        window.location.href = window.location.href
       }
       let params = {}
       for (let k in this.filterList) {
@@ -404,16 +404,22 @@ export default {
       })
     },
     roomDetailPage (item) {
-      let query = {
+      let query = ObjectMap({
         houseType: item.type,
         estateRoomTypeId: item.type === 1 ? item.id : undefined,
         roomId: item.type === 2 ? item.id : undefined,
         rentPrice: item.type === 1 ? item.minRentPrice : undefined
-      }
-      this.$router.push({
-        path: `/${this.$route.path}/${item.roomCode}`,
-        query
       })
+      // this.$router.push({
+      //   path: `/${this.$route.path}/${item.roomCode}`,
+      //   query
+      // })
+      let queryUrl = ''
+      for (let key in query) {
+        queryUrl += `&${key}=${query[key]}`
+      }
+      const openUrl = `${window.location.origin}${this.$route.path}/${item.roomCode || 'fangyuanbianma'}`
+      window.open(`${openUrl}?${queryUrl.substr(1)}`)
     }
   },
   watch: {

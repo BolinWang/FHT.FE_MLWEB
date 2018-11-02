@@ -11,15 +11,15 @@
         <h4>关注我们</h4>
         <ul class="follow_QRcode">
           <li>
-            <img src="../assets/images/icon_footer_logo.png">
+            <img src="../assets/images/code/web_code_ios@2x.png">
             <span>APP下载苹果</span>
           </li>
           <li>
-            <img src="../assets/images/icon_footer_logo.png">
+            <img src="../assets/images/code/web_code_android@2x.png">
             <span>APP下载安卓</span>
           </li>
           <li>
-            <img src="../assets/images/icon_footer_logo.png">
+            <img src="../assets/images/code/web_code_vx@2x.png">
             <span>公众号更多惊喜</span>
           </li>
         </ul>

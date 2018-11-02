@@ -46,9 +46,18 @@
             <el-popover
               v-if="item.type === 'popover'"
               :key="item.title"
-              title="APP下载"
-              trigger="hover"
-              content="APP下载">
+              title=""
+              trigger="hover">
+              <div class="popover_items">
+                <div class="popover_items__item">
+                  <img src="../assets/images/code/web_code_ios@2x.png">
+                  <span>APP下载苹果</span>
+                </div>
+                <div class="popover_items__item">
+                  <img src="../assets/images/code/web_code_android@2x.png">
+                  <span>APP下载安卓</span>
+                </div>
+              </div>
               <li
                 slot="reference"
                 class="linkItem"
@@ -369,6 +378,27 @@ export default {
   }
   .btn_userRequest {
     width: 200px;
+  }
+  .popover_items {
+    display: flex;
+    .popover_items__item {
+      display: flex;
+      flex-direction: column;
+      align-content: center;
+      justify-content: center;
+      &:not(:first-child) {
+        margin-left: 10px;
+      }
+      span {
+        font-size: 12px;
+        text-align: center;
+        margin-top: 10px;
+      }
+      img {
+        width: 100px;
+        height: 100px;
+      }
+    }
   }
 </style>
 <style lang="scss">

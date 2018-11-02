@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-11-01 18:59:38
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-11-01 19:44:34
+ * @Last Modified time: 2018-11-02 16:35:08
  */
 
 <template>
@@ -16,19 +16,31 @@
     <div
       class="room_items__card"
       v-for="item in similarRoomList"
-      :key="item.roomId">
+      :key="item.roomId"
+      @click="openDetailPage(item)">
       <el-card
         shadow="never"
         :body-style="{ padding: '10px' }">
         <img v-lazy="item.imageUrl" class="image">
-        <div class="info">
+        <div class="info_item">
+          <span class="roomName">{{item.name || item.estateName}}</span>
+          <span class="region">
+            <i class="el-icon-location"></i>
+            {{item.region}} {{item.zone}}
+          </span>
+        </div>
+        <div class="info_item">
+          {{item.houseArea}} | {{item.houseType}} | {{item.decorationDegree}}
+        </div>
+        <div class="info_item">
+          <div class="tags">
+            <el-tag size="small" v-for="tag in item.showTagList" :key="tag.tagName" :type="tag.tagName | filterTags">
+              {{tag.tagName}}
+            </el-tag>
+          </div>
           <div class="price">
             <span>{{item.minRentPrice}}</span>
              元/月
-          </div>
-          <div class="region">
-            <i class="el-icon-location"></i>
-            {{item.region}}
           </div>
         </div>
       </el-card>
@@ -37,6 +49,7 @@
 </template>
 
 <script>
+import { ObjectMap } from '@/utils'
 export default {
   name: 'carousel',
   props: {
@@ -45,6 +58,43 @@ export default {
       default () {
         return []
       }
+    }
+  },
+  filters: {
+    filterTags (val) {
+      const tagsMap = {
+        '整租': 'success',
+        '合租': 'info',
+        '公寓': 'warning',
+        'VR': 'primary'
+      }
+      return tagsMap[val] || 'success'
+    }
+  },
+  data () {
+    return {
+
+    }
+  },
+  methods: {
+    openDetailPage (item) {
+      let query = ObjectMap({
+        houseType: item.type,
+        estateRoomTypeId: item.type === 1 ? item.id : undefined,
+        roomId: item.type === 2 ? item.id : undefined,
+        rentPrice: item.type === 1 ? item.minRentPrice : undefined
+      })
+      // this.$router.push({
+      //   path: `/${this.$route.path}/${item.roomCode}`,
+      //   query
+      // })
+      let queryUrl = ''
+      for (let key in query) {
+        queryUrl += `&${key}=${query[key]}`
+      }
+      const currentPath = this.$route.path.split('/search/')[0]
+      const openUrl = `${window.location.origin}${currentPath}/search/${item.roomCode || 'fangyuanbianma'}`
+      window.open(`${openUrl}?${queryUrl.substr(1)}`)
     }
   }
 }
@@ -59,6 +109,7 @@ export default {
     width: 284px;
     background: #fff;
     overflow: hidden;
+    cursor: pointer;
     .image {
       width: 100%;
       height: 209px;
@@ -66,17 +117,30 @@ export default {
     &:not(:last-child) {
       margin-right: 10px;
     }
+  }
+  .info_item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: #999;
+    line-height: 30px;
+    .tags span {
+      margin-right: 5px;
+    }
+    .roomName {
+      font-size: 14px;
+      overflow: hidden;
+      width: 60%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      color: #333;
+    }
     .price {
       color: #FF8C07;
-      font-size: 14px;
       span {
-        font-size: 24px;
+        font-size: 20px;
       }
-      line-height: 40px;
-    }
-    .region {
-      color: #999;
-      line-height: 40px;
     }
   }
 </style>

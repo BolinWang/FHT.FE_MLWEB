@@ -104,7 +104,9 @@ export default {
       // for (let i = 0; i < this.picList.length; i++) {
       //   previewList.push(await imgloadAsync(this.picList[i]))
       // }
-      this.$preview.open(index, this.picList)
+      this.$nextTick(() => {
+        this.$preview.open(index, this.picList)
+      })
     }
   },
   watch: {
