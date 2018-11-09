@@ -268,7 +268,7 @@ export default {
               this.$message.error(res.msg || '网络错误o(╥﹏╥)o')
               return false
             }
-            this.$toast('提交成功！')
+            this.$message.success('提交成功！')
           })
         } else {
           return false
@@ -289,7 +289,7 @@ export default {
               this.$message.error(res.msg || '网络错误o(╥﹏╥)o')
               return false
             }
-            this.$toast('提交成功！')
+            this.$message.success('提交成功！')
           })
         } else {
           return false

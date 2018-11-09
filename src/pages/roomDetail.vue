@@ -162,12 +162,21 @@
       width="500px"
       @open="openBooking"
       :before-close="done => closeDialogForm(done, 'form_booking')">
-      <el-form :model="bookingData" :rules="rules" ref="form_booking" label-width="100px" class="demo-ruleForm">
+      <el-form :model="bookingData" :rules="rules" ref="form_booking" label-width="100px">
         <el-form-item label="姓名" prop="name">
           <el-input placeholder="请输入您的姓名" v-model="bookingData.name"></el-input>
         </el-form-item>
         <el-form-item label="手机号码" prop="phone">
           <el-input placeholder="请输入您的手机号码" v-model="bookingData.phone"></el-input>
+        </el-form-item>
+        <el-form-item label="验证码" prop="vCode">
+          <el-input placeholder="请输入验证码" v-model="bookingData.vCode">
+            <template slot="append">
+              <div @click="getCheckCode" :class="[sendCodeCount == 0 ? 'active' : '']">
+                {{codeText}}
+              </div>
+            </template>
+          </el-input>
         </el-form-item>
         <el-form-item label="看房时间" prop="selectedOptions">
           <el-cascader
@@ -287,9 +296,15 @@ export default {
         ],
         selectedOptions: [
           {type: 'array', required: true, message: '请选择看房时间', trigger: 'change'}
+        ],
+        vCode: [
+          { required: true, trigger: 'blur', message: '请输入验证码' }
         ]
       },
-      options: []
+      options: [],
+      codeText: '发送验证码',
+      sendCodeCount: 0,
+      isCD: false
     }
   },
   created () {
@@ -431,6 +446,32 @@ export default {
         }
       })
     },
+    getCheckCode () {
+      if (!this.bookingData.phone) {
+        this.$message.error('请先输入手机号')
+        return false
+      }
+      if (this.isCD) {
+        return
+      }
+      let time = 60
+      let timer = setInterval(() => {
+        this.isCD = true
+        this.sendCodeCount++
+        time--
+        this.codeText = time + '秒后重发'
+        if (time < 0) {
+          this.isCD = false
+          clearInterval(timer)
+          this.codeText = '重发验证码'
+        }
+      }, 1000)
+      roomDetailApi.sendCheckcodeApi({
+        mobile: this.bookingData.phone
+      }).then((res) => {
+        this.$message.success('验证码发送成功，请查收')
+      }).catch()
+    },
     doBooking () {
       const selectedDateTime = this.bookingData.selectedOptions
       const bookingTime = `${selectedDateTime[0]} ${selectedDateTime[1]}${selectedDateTime[2]}`
@@ -441,7 +482,7 @@ export default {
         housingType: this.detailData.houseRentType === 3 ? 1 : 2,
         positionId: this.detailData.estateRoomTypeId || this.detailData.roomId
       }).then(res => {
-        this.$toast('预约成功！')
+        this.$message.success('预约成功！')
       })
     }
   }
@@ -686,5 +727,8 @@ export default {
 }
 .btn_booking {
   width: 200px;
+}
+.active {
+  color: #FFA33B;
 }
 </style>

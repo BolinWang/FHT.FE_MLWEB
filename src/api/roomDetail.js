@@ -33,5 +33,13 @@ export const roomDetailApi = {
       method: 'tenantBooking',
       params
     })
+  },
+  /* 发送短信验证码 */
+  sendCheckcodeApi (params = {}) {
+    return fetch('/api/customer', {
+      v: '2.3',
+      method: 'sendCheckcode',
+      params
+    })
   }
 }
