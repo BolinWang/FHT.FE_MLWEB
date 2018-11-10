@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 17:22:18
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-10-31 16:29:41
+ * @Last Modified time: 2018-11-10 12:51:19
  */
 
 <template>
@@ -20,7 +20,7 @@
         <a
           class="router-link-active"
           v-else-if="item.name === '立即找房'"
-          @click="$router.back(-1)">{{ item.name }}
+          @click="$router.push(item.path)">{{ item.name }}
         </a>
         <router-link
           v-else
@@ -47,13 +47,14 @@ export default {
   methods: {
     getBreadcrumb () {
       let matched = this.$route.matched.filter(item => item.name)
+      const routePath = this.$route.path.split('/search/')
       const first = matched[0]
       let addMatched = []
       if (first && first.name !== '首页') {
         addMatched.push({name: '首页', path: '/'})
       }
       if (this.$route.name === '房间详情') {
-        addMatched.push({name: '立即找房', path: '/search'})
+        addMatched.push({name: '立即找房', path: routePath.length > 1 ? routePath[0] + '/search' : '/search'})
       }
       matched = addMatched.concat(matched)
       this.levelList = matched
