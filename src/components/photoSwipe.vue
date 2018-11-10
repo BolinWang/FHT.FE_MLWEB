@@ -9,7 +9,7 @@
             :key="index"
             :data-background="item.src"
             @click.native="openPreview(index)"
-            class="swiper-slide preview-img swiper-lazy">
+            class="swiper-no-swiping swiper-slide preview-img swiper-lazy">
             <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
           </swiper-slide>
         </swiper>
@@ -22,7 +22,7 @@
               v-for="(item, index) in picListThumbs"
               :key="index"
               :data-background="item.src"
-               class="swiper-slide swiper-lazy" >
+              class="swiper-slide swiper-lazy" >
               <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
             </swiper-slide>
           </swiper>
@@ -59,6 +59,7 @@ export default {
         lazy: true,
         spaceBetween: 10,
         loop: true,
+        noSwiping: true,
         loopedSlides: this.picList.length,
         navigation: {
           nextEl: '.swiper-button-next',
@@ -86,35 +87,41 @@ export default {
     })
   },
   methods: {
-    openPreview (index) {
-      if (!this.picList || this.picList.length === 0) {
+    async openPreview (index) {
+      if (!this.picListTop || this.picListTop.length === 0) {
         this.$message.error('图片预览失败')
         return false
       }
-      // const imgloadAsync = item => new Promise(resolve => {
-      //   let _img = new Image()
-      //   _img.src = item.src
-      //   _img.onload = e => {
-      //     item.w = _img.width > 800 ? 800 : _img.width
-      //     item.h = _img.width > 800 ? 600 : _img.height
-      //     resolve(item)
-      //   }
-      // })
-      // const previewList = []
-      // for (let i = 0; i < this.picList.length; i++) {
-      //   previewList.push(await imgloadAsync(this.picList[i]))
-      // }
+      const imgloadAsync = item => new Promise(resolve => {
+        let _img = new Image()
+        _img.src = item.src
+        _img.onload = e => {
+          item.w = _img.width > 800 ? 800 : _img.width
+          item.h = _img.width > 800 ? 600 : _img.height
+          resolve(item)
+        }
+      })
+      const previewList = []
+      for (let i = 0; i < this.picListTop.length; i++) {
+        previewList.push(await imgloadAsync(this.picListTop[i]))
+      }
       this.$nextTick(() => {
-        this.$preview.open(index, this.picList)
+        this.$preview.open(index, previewList)
       })
     }
   },
   watch: {
     picList: {
       immediate: true,
-      handler (val) {
-        this.$set(this, 'picListTop', val)
-        const thums = val.map(item => {
+      handler (val = []) {
+        const deelList = val || []
+        if (deelList.length < 5) {
+          for (let i = 0; i < 5 - deelList.length; i++) {
+            deelList.push(deelList[i])
+          }
+        }
+        this.$set(this, 'picListTop', deelList)
+        const thums = deelList.map(item => {
           return {
             src: item.src,
             w: 200,
@@ -159,9 +166,10 @@ export default {
   }
 }
 .content__thumb {
-  position: relative;
   cursor: pointer;
   margin-top: 10px;
+  text-align: center;
+  position: relative;
   .gallery-thumbs {
     height: 102px;
     box-sizing: border-box;

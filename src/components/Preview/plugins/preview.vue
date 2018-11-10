@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-04-11 16:50:01
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-10-31 19:19:44
+ * @Last Modified time: 2018-11-10 12:05:07
  */
 
 <template>
@@ -196,8 +196,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  @import './photoswipe.css';
-  @import './default-skin/default-skin.css';
   .fht__download {
     text-align: center;
     width: 44px;
@@ -226,4 +224,8 @@ export default {
       opacity: 1;
     }
   }
+</style>
+<style lang="scss">
+@import './photoswipe.css';
+@import './default-skin/default-skin.css';
 </style>

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import PhotoTest from '@/pages/PhotoTest'
 import Index from '@/pages/Index'
 import SearchRoom from '@/pages/SearchRoom'
@@ -8,6 +7,7 @@ export default [
   {
     path: '/',
     name: '首页',
+    redirect: '/search',
     component: Index,
     meta: {
       prerender: true,

@@ -2,7 +2,7 @@
  * @Author: chudequan
  * @Date: 2018-07-01 17:10:30
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-11-02 16:44:37
+ * @Last Modified time: 2018-11-10 12:34:45
  */
 <template>
   <div class="page_container">
@@ -323,6 +323,7 @@ export default {
     getCityList () {
       this.cityList = JSON.parse(localStorage.getItem('ML_CITYLIST') || '[]')
       this.cityId = this.$store.state.user.cityInfo.cityId || 330100
+      this.routerRefresh(this.$route.query)
       this.getAreaList()
     },
     getAreaList () {

@@ -170,9 +170,9 @@
           <el-input placeholder="请输入您的手机号码" v-model="bookingData.phone"></el-input>
         </el-form-item>
         <el-form-item label="验证码" prop="vCode">
-          <el-input placeholder="请输入验证码" v-model="bookingData.vCode">
-            <template slot="append">
-              <div @click="getCheckCode" :class="[sendCodeCount == 0 ? 'active' : '']">
+          <el-input placeholder="请输入验证码" :maxlength="6" v-model="bookingData.vCode">
+            <template slot="suffix">
+              <div @click="getCheckCode" :class="[sendCodeCount == 0 ? 'active' : 'disabled']">
                 {{codeText}}
               </div>
             </template>
@@ -447,12 +447,16 @@ export default {
       })
     },
     getCheckCode () {
-      if (!this.bookingData.phone) {
-        this.$message.error('请先输入手机号')
+      this.$refs.form_booking.validateField('phone', msg => {
+        if (msg) {
+          return false
+        }
+        this.doGetVCode()
+      })
+    },
+    doGetVCode () {
+      if (!this.bookingData.phone || this.isCD) {
         return false
-      }
-      if (this.isCD) {
-        return
       }
       let time = 60
       let timer = setInterval(() => {
@@ -476,13 +480,13 @@ export default {
       const selectedDateTime = this.bookingData.selectedOptions
       const bookingTime = `${selectedDateTime[0]} ${selectedDateTime[1]}${selectedDateTime[2]}`
       roomDetailApi.bookingRoomApi({
-        name: this.bookingData.name,
-        phone: this.bookingData.phone,
+        ...this.bookingData,
         bookingTime: new Date(bookingTime).getTime(),
         housingType: this.detailData.houseRentType === 3 ? 1 : 2,
         positionId: this.detailData.estateRoomTypeId || this.detailData.roomId
       }).then(res => {
         this.$message.success('预约成功！')
+        this.showBookingRoom = false
       })
     }
   }
@@ -729,6 +733,11 @@ export default {
   width: 200px;
 }
 .active {
-  color: #FFA33B;
+  color: #ff8400;
+  cursor: pointer;
+}
+.disabled {
+  cursor: not-allowed;
+  color: #606266;
 }
 </style>

@@ -4,6 +4,7 @@
       <img class="logo" src="../assets/images/icon_footer_logo.png" alt="logo" title="麦邻租房" />
       <div class="contract_us">
         <h4>联系我们</h4>
+        <p>杭州复恒科技有限公司</p>
         <p>服务热线: 400-033-9858</p>
         <p>联系地址 : 杭州市西溪路550号钱江西溪<br>新座6幢B座5楼</p>
       </div>

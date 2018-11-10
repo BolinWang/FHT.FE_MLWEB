@@ -2,7 +2,7 @@
  * @Author: FT.FE.Bolin
  * @Date: 2018-11-01 18:59:38
  * @Last Modified by: FT.FE.Bolin
- * @Last Modified time: 2018-11-02 16:35:08
+ * @Last Modified time: 2018-11-10 11:46:03
  */
 
 <template>
@@ -125,6 +125,9 @@ export default {
     font-size: 12px;
     color: #999;
     line-height: 30px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
     .tags span {
       margin-right: 5px;
     }

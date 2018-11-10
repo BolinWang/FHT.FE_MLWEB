@@ -154,6 +154,7 @@ export default {
         callback()
       }
     }
+    const routePath = this.$route.path.split('/search/')
     return {
       searchCity: '',
       showCitySelect: false,
@@ -168,7 +169,7 @@ export default {
       }, {
         title: '立即找房',
         type: 'link',
-        link: this.$route.path
+        link: routePath.length > 1 ? routePath[0] + '/search' : '/search'
       }, {
         title: 'APP下载',
         type: 'popover'
@@ -239,7 +240,8 @@ export default {
           if (item.isHome) {
             window.open(item.link)
           } else {
-            location.href = item.link
+            // location.href = item.link
+            this.$router.push(item.link)
           }
           break
         case 'userRequest':
@@ -269,6 +271,7 @@ export default {
               return false
             }
             this.$message.success('提交成功！')
+            this.showUserRequest = false
           })
         } else {
           return false
@@ -290,6 +293,7 @@ export default {
               return false
             }
             this.$message.success('提交成功！')
+            this.showBizpartner = false
           })
         } else {
           return false
