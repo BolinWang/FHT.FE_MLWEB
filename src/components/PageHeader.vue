@@ -159,7 +159,7 @@ export default {
       searchCity: '',
       showCitySelect: false,
       loading: false,
-      cityName: this.$store.state.user.cityInfo.name || '杭州',
+      cityName: this.$store.state.user.cityInfo.name || '',
       sortCityList,
       pageLinks: [{
         title: '首页',
@@ -197,6 +197,14 @@ export default {
           {required: true, message: '请输入您的所在城市', trigger: 'blur'}
         ]
       }
+    }
+  },
+  created () {
+    if (!this.cityName) {
+      this.selectCity({
+        cityId: 330100,
+        name: '杭州'
+      })
     }
   },
   methods: {
