@@ -1,4 +1,3 @@
-import PhotoTest from '@/pages/PhotoTest'
 import Index from '@/pages/Index'
 import SearchRoom from '@/pages/SearchRoom'
 import roomDetail from '@/pages/roomDetail'
@@ -58,25 +57,6 @@ export default [
         {
           name: 'description',
           content: '{城市名}+麦邻租房,提供最新的租房房源,酒店式公寓、单身公寓、青年公寓、白领公寓出租服务,免中介费，拎包入住,可合租、整租,{城市名}+找房就找麦邻租房！'
-        }
-      ]
-    }
-  },
-  {
-    path: '/photo-test',
-    name: '测试',
-    component: PhotoTest,
-    meta: {
-      prerender: true,
-      title: '测试页',
-      metaList: [
-        {
-          name: 'keywords',
-          content: '1234'
-        },
-        {
-          name: 'description',
-          content: '5678'
         }
       ]
     }

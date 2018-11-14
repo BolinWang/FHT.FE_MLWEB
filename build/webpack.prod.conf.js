@@ -86,7 +86,7 @@ const webpackConfig = merge(baseWebpackConfig, {
 
     new PrerenderSPAPlugin({
       staticDir: config.build.assetsRoot,
-      routes: [ '/', '/search', '/photo-test' ],
+      routes: [ '/', '/search' ],
       renderer: new Renderer({
         inject: {
           foo: 'bar'

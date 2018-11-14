@@ -244,32 +244,29 @@ export default {
       let derections = [...new Set(val.split(','))].map(item => {
         return RoomDirection[item]
       })
-      return derections.join('、')
+      return derections.join('、') || '未知'
     },
     filterHouseType () {
       let val = this.detailData.houseType
       if (this.detailData.houseRentType !== 3) {
-        return val
+        return val || '未知'
       }
-      return (this.detailData.minChamber === this.detailData.maxChamber ? this.detailData.maxChamber : `${this.detailData.minChamber} ~ ${this.detailData.maxChamber}`) + ' 室'
+      return ((this.detailData.minChamber === this.detailData.maxChamber ? this.detailData.maxChamber : `${this.detailData.minChamber} ~ ${this.detailData.maxChamber}`)) || '未知' + ' 室'
     },
     filterFloorName () {
       let val = this.detailData.floorName
       if (this.detailData.houseRentType !== 3) {
         return val
       }
-      // eslint-disable-next-line
-      this.detailData.minFloorNum = this.detailData.minFloorNum || '未知'
-      // eslint-disable-next-line
-      this.detailData.maxFloorNum = this.detailData.maxFloorNum || '未知'
-      return this.detailData.minFloorNum === this.detailData.maxFloorNum ? this.detailData.maxFloorNum : `${this.detailData.minFloorNum} ~ ${this.detailData.maxFloorNum}`
+      const dealFloor = this.detailData.minFloorNum === this.detailData.maxFloorNum ? this.detailData.maxFloorNum : `${this.detailData.minFloorNum} ~ ${this.detailData.maxFloorNum}`
+      return dealFloor || '未知'
     },
     filterHouseArea () {
       let val = this.detailData.houseArea
       if (this.detailData.houseRentType !== 3) {
-        return `${val} ㎡`
+        return `${val || '未知'} ㎡`
       }
-      return `${this.detailData.minRoomArea} ㎡` + (this.detailData.minRoomArea === this.detailData.maxRoomArea ? '' : '起')
+      return `${this.detailData.minRoomArea || '未知'} ㎡` + (this.detailData.minRoomArea === this.detailData.maxRoomArea ? '' : '起')
     }
   },
   data () {
