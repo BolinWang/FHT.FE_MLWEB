@@ -50,7 +50,7 @@
                   <span class="label">朝向</span>
                   <span class="value">{{filterRoomDirection}}</span>
                 </li>
-                <li class="infos__item">
+                <li class="infos__item" v-if="detailData.houseRentType !== 3">
                   <span class="label">编号</span>
                   <span class="value">{{detailData.roomCode}}</span>
                 </li>
@@ -258,6 +258,10 @@ export default {
       if (this.detailData.houseRentType !== 3) {
         return val
       }
+      // eslint-disable-next-line
+      this.detailData.minFloorNum = this.detailData.minFloorNum || '未知'
+      // eslint-disable-next-line
+      this.detailData.maxFloorNum = this.detailData.maxFloorNum || '未知'
       return this.detailData.minFloorNum === this.detailData.maxFloorNum ? this.detailData.maxFloorNum : `${this.detailData.minFloorNum} ~ ${this.detailData.maxFloorNum}`
     },
     filterHouseArea () {
