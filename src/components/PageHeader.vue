@@ -200,6 +200,7 @@ export default {
     }
   },
   created () {
+    console.log('created')
     if (!this.cityName) {
       this.selectCity({
         cityId: 330100,
@@ -210,6 +211,8 @@ export default {
   methods: {
     selectCity (city) {
       this.$store.dispatch('UPDATECITY', city).then(() => {
+        this.showCitySelect = false
+        this.cityName = city.name
         this.routerRefresh()
       })
     },
